@@ -417,7 +417,6 @@ const ALL_QUESTIONS=[
 
 const PASS_MARK=0.75;
 const ADMIN_PW="KatalonTrue";
-const STORE_KEY="katalon_quiz_v2";
 const CATS=["Configuration","Locators","Test Creation","Debugging","Test Data","Test Execution"];
 
 // ── STATE ──────────────────────────────────────────────────────────────
@@ -741,9 +740,22 @@ function restartQuiz(){
   showScreen('screen-name');
 }
 
-// ── STORAGE ────────────────────────────────────────────────────────────
-function saveResult(r){try{const a=getResults();a.push(r);localStorage.setItem(STORE_KEY,JSON.stringify(a));}catch(e){}}
-function getResults(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'[]');}catch(e){return[];}}
+// ── STORAGE (Upstash Redis via /api/results) ──────────────────────────
+async function saveResult(r){
+  try{
+    await fetch('/api/results',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(r)
+    });
+  }catch(e){console.warn('Failed to save result',e);}
+}
+async function getResults(){
+  try{
+    const res=await fetch('/api/results');
+    return await res.json();
+  }catch(e){return[];}
+}
 
 // ── ADMIN ──────────────────────────────────────────────────────────────
 function showAdminLogin(){
@@ -761,8 +773,12 @@ function adminLogin(){
     document.getElementById('pw-input').value='';
   }
 }
-function renderDashboard(){
-  const results=getResults();
+async function renderDashboard(){
+  // Show loading state
+  document.getElementById('kpi-row').innerHTML='<div style="color:var(--muted);font-family:var(--font-mono);font-size:13px;padding:8px 0">Loading results...</div>';
+  document.getElementById('cat-perf-grid').innerHTML='';
+  document.getElementById('results-tbody').innerHTML='';
+  const results=await getResults();
   const total=results.length;
   const passed=results.filter(r=>r.passed).length;
   const avg=total?Math.round(results.reduce((s,r)=>s+r.pct,0)/total):0;
@@ -805,9 +821,14 @@ function renderDashboard(){
   }).join('');
 }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function clearResults(){if(confirm('Clear ALL quiz results? This cannot be undone.')){localStorage.removeItem(STORE_KEY);renderDashboard();}}
-function exportCSV(){
-  const results=getResults();if(!results.length){alert('No results to export.');return;}
+async function clearResults(){
+  if(confirm('Clear ALL quiz results? This cannot be undone.')){
+    try{await fetch('/api/results',{method:'DELETE'});}catch(e){}
+    renderDashboard();
+  }
+}
+async function exportCSV(){
+  const results=await getResults();if(!results.length){alert('No results to export.');return;}
   const headers=['#','Name','Organisation','Score','Percentage','Passed','Timestamp',...CATS];
   const rows=results.map((r,i)=>{
     const cats=CATS.map(c=>{const d=r.catScores&&r.catScores[c];return d?d.correct+'/'+d.total:'N/A';});
