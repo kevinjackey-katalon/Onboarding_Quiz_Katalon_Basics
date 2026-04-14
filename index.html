@@ -6,492 +6,211 @@
 <title>Katalon Studio — Web Testing Quiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f14;
-    --surface: #161920;
-    --surface2: #1e2230;
-    --border: #2a2f3e;
-    --accent: #4fffb0;
-    --accent2: #00c8ff;
-    --accent3: #ff5f87;
-    --text: #e8eaf2;
-    --muted: #6b7280;
-    --correct: #4fffb0;
-    --wrong: #ff5f87;
-    --font-mono: 'Space Mono', monospace;
-    --font-body: 'DM Sans', sans-serif;
-  }
+:root {
+  --bg:#0d0f14; --surface:#161920; --surface2:#1e2230; --border:#2a2f3e;
+  --accent:#4fffb0; --accent2:#00c8ff; --accent3:#ff5f87;
+  --text:#e8eaf2; --muted:#6b7280;
+  --font-mono:'Space Mono',monospace; --font-body:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(79,255,176,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(79,255,176,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.container{max-width:780px;margin:0 auto;padding:40px 24px 80px;position:relative;z-index:1}
+.wide{max-width:1000px}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── SCREENS ── */
+.screen{display:none}
+.screen.active{display:block}
+#screen-name,#screen-admin-login{min-height:100vh;display:flex;align-items:center;justify-content:center}
+#screen-name.active,#screen-admin-login.active{display:flex}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* ── NAME ENTRY ── */
+.name-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 40px;max-width:480px;width:100%;text-align:center;position:relative;z-index:1;animation:slideUp .5s ease both}
+.name-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px 20px 0 0}
+.badge{display:inline-block;background:rgba(79,255,176,.1);border:1px solid rgba(79,255,176,.3);color:var(--accent);font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:20px}
+.name-card h1{font-family:var(--font-mono);font-size:26px;font-weight:700;margin-bottom:8px;line-height:1.2}
+.name-card h1 span{color:var(--accent)}
+.name-card>p{color:var(--muted);font-size:14px;margin-bottom:32px;line-height:1.6}
+.name-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;color:var(--text);font-family:var(--font-body);font-size:15px;outline:none;transition:border-color .2s;margin-bottom:10px}
+.name-input:focus{border-color:var(--accent2)}
+.name-input::placeholder{color:var(--muted)}
+.name-error{color:var(--accent3);font-size:12px;margin-bottom:10px;font-family:var(--font-mono);display:none}
+.name-error.show{display:block}
+.start-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:10px;padding:14px;font-family:var(--font-mono);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:opacity .2s,transform .15s}
+.start-btn:hover{opacity:.88;transform:translateY(-1px)}
+.meta-info{display:flex;justify-content:center;gap:24px;margin-top:24px;padding-top:24px;border-top:1px solid var(--border)}
+.meta-item .val{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--accent)}
+.meta-item .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 
-  /* Grid background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(79,255,176,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(79,255,176,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+/* ── QUIZ ── */
+.quiz-header{text-align:center;margin-bottom:36px;animation:fadeDown .6s ease both}
+.quiz-greeting{font-family:var(--font-mono);font-size:12px;color:var(--accent);letter-spacing:1px;margin-bottom:4px}
+.quiz-header h2{font-family:var(--font-mono);font-size:20px;font-weight:700}
+.progress-wrap{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.progress-bar{flex:1;height:4px;background:var(--border);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.progress-label{font-family:var(--font-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.streak{display:none;background:rgba(79,255,176,.1);border:1px solid rgba(79,255,176,.25);border-radius:8px;padding:8px 16px;font-family:var(--font-mono);font-size:12px;color:var(--accent);text-align:center;margin-bottom:16px;animation:fadeIn .3s ease}
+.streak.show{display:block}
+.category-pill{display:inline-block;background:var(--surface2);border:1px solid var(--border);color:var(--accent2);font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;border-radius:4px;margin-bottom:14px}
+.question-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:20px;position:relative;overflow:hidden;animation:slideUp .4s ease both}
+.question-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:16px 16px 0 0}
+.question-num{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px}
+.question-text{font-size:18px;font-weight:500;line-height:1.5;color:var(--text);margin-bottom:28px}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:border-color .2s,background .2s,transform .15s;font-size:14px;color:var(--text);text-align:left;width:100%}
+.option:hover:not(:disabled){border-color:var(--accent2);background:rgba(0,200,255,.05);transform:translateX(4px)}
+.option .opt-letter{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,color .2s}
+.option.correct{border-color:var(--accent);background:rgba(79,255,176,.08);animation:pulse-correct .4s ease}
+.option.correct .opt-letter{background:var(--accent);color:#000;border-color:var(--accent)}
+.option.wrong{border-color:var(--accent3);background:rgba(255,95,135,.08);animation:shake .4s ease}
+.option.wrong .opt-letter{background:var(--accent3);color:#fff;border-color:var(--accent3)}
+.option.disabled{cursor:default;opacity:.55}
+.option.correct.disabled,.option.wrong.disabled{opacity:1}
+.feedback{display:none;margin-top:20px;padding:14px 18px;border-radius:10px;font-size:14px;line-height:1.5;border-left:3px solid}
+.feedback.show{display:block;animation:fadeIn .3s ease}
+.feedback.correct{background:rgba(79,255,176,.07);border-color:var(--accent);color:#a7ffe0}
+.feedback.wrong{background:rgba(255,95,135,.07);border-color:var(--accent3);color:#ffb3c6}
+.feedback strong{font-weight:600;display:block;margin-bottom:4px}
+.nav{display:flex;justify-content:flex-end;margin-top:16px}
+.btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:12px 28px;font-family:var(--font-mono);font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:opacity .2s,transform .15s;display:none}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.btn.show{display:block}
 
-  .container {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
-    position: relative;
-    z-index: 1;
-  }
+/* ── SCORE ── */
+#screen-score{text-align:center}
+.score-ring{width:160px;height:160px;margin:0 auto 32px;position:relative}
+.score-ring svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:10}
+.ring-fill{fill:none;stroke:url(#scoreGrad);stroke-width:10;stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:440;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1) .3s}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-family:var(--font-mono);font-size:36px;font-weight:700;color:var(--accent);line-height:1}
+.score-denom{font-size:13px;color:var(--muted);margin-top:2px}
+.score-title{font-family:var(--font-mono);font-size:24px;font-weight:700;margin-bottom:10px}
+.score-sub{color:var(--muted);font-size:15px;margin-bottom:40px;line-height:1.6}
+.cat-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:32px}
+.cat-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:left}
+.cat-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-family:var(--font-mono)}
+.cat-stat-score{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent)}
+.cat-stat-bar{height:3px;background:var(--border);border-radius:4px;margin-top:8px;overflow:hidden}
+.cat-stat-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1) .5s}
+.breakdown{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:32px;text-align:left}
+.breakdown-header{padding:16px 24px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.breakdown-row{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:14px;font-size:13px}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.breakdown-q{color:var(--text);line-height:1.4;font-size:13px}
+.breakdown-a{color:var(--muted);font-size:12px;margin-top:3px}
+.breakdown-a.c{color:var(--accent)}
+.breakdown-a.w{color:var(--accent3)}
+.restart-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:10px;padding:14px 40px;font-family:var(--font-mono);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .15s}
+.restart-btn:hover{opacity:.88;transform:translateY(-2px)}
 
-  /* ── Header ── */
-  .header {
-    text-align: center;
-    margin-bottom: 48px;
-    animation: fadeDown 0.6s ease both;
-  }
-  .header .badge {
-    display: inline-block;
-    background: rgba(79,255,176,0.1);
-    border: 1px solid rgba(79,255,176,0.3);
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    border-radius: 999px;
-    margin-bottom: 20px;
-  }
-  .header h1 {
-    font-family: var(--font-mono);
-    font-size: clamp(22px, 4vw, 34px);
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -1px;
-    color: var(--text);
-    margin-bottom: 12px;
-  }
-  .header h1 span { color: var(--accent); }
-  .header p {
-    color: var(--muted);
-    font-size: 15px;
-    font-weight: 300;
-    max-width: 480px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
+/* ── ADMIN LOGIN ── */
+.admin-login-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 40px;max-width:400px;width:100%;text-align:center;animation:slideUp .5s ease both;position:relative;z-index:1}
+.admin-login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent3),var(--accent2));border-radius:20px 20px 0 0}
+.admin-icon{font-size:40px;margin-bottom:16px}
+.admin-login-card h2{font-family:var(--font-mono);font-size:20px;font-weight:700;margin-bottom:8px}
+.admin-login-card>p{color:var(--muted);font-size:13px;margin-bottom:28px}
+.pw-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;color:var(--text);font-family:var(--font-mono);font-size:14px;outline:none;transition:border-color .2s;margin-bottom:10px;letter-spacing:3px}
+.pw-input:focus{border-color:var(--accent2)}
+.pw-error{color:var(--accent3);font-size:12px;font-family:var(--font-mono);margin-bottom:10px;display:none}
+.pw-error.show{display:block}
+.admin-login-btn{width:100%;background:linear-gradient(135deg,var(--accent3),#ff8fa3);color:#fff;border:none;border-radius:10px;padding:13px;font-family:var(--font-mono);font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .15s;letter-spacing:.5px}
+.admin-login-btn:hover{opacity:.88;transform:translateY(-1px)}
+.back-link{display:inline-block;margin-top:16px;color:var(--muted);font-size:12px;font-family:var(--font-mono);cursor:pointer;transition:color .2s}
+.back-link:hover{color:var(--accent)}
 
-  /* ── Progress ── */
-  .progress-wrap {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
-    animation: fadeDown 0.6s 0.1s ease both;
-  }
-  .progress-bar {
-    flex: 1;
-    height: 4px;
-    background: var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 4px;
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .progress-label {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--muted);
-    white-space: nowrap;
-  }
+/* ── ADMIN DASHBOARD ── */
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:12px}
+.admin-topbar h1{font-family:var(--font-mono);font-size:20px;font-weight:700}
+.admin-topbar h1 span{color:var(--accent3)}
+.admin-actions{display:flex;gap:10px;flex-wrap:wrap}
+.admin-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 18px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:border-color .2s,color .2s}
+.admin-btn:hover{border-color:var(--accent);color:var(--accent)}
+.admin-btn.danger:hover{border-color:var(--accent3);color:var(--accent3)}
+.admin-btn.export{border-color:rgba(79,255,176,.3);color:var(--accent)}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:28px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.kpi.green::after{background:var(--accent)}.kpi.blue::after{background:var(--accent2)}.kpi.red::after{background:var(--accent3)}.kpi.yellow::after{background:#ffd166}
+.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:var(--font-mono);margin-bottom:8px}
+.kpi-value{font-family:var(--font-mono);font-size:32px;font-weight:700;line-height:1}
+.kpi.green .kpi-value{color:var(--accent)}.kpi.blue .kpi-value{color:var(--accent2)}.kpi.red .kpi-value{color:var(--accent3)}.kpi.yellow .kpi-value{color:#ffd166}
+.kpi-sub{font-size:12px;color:var(--muted);margin-top:4px}
+.section-title{font-family:var(--font-mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.cat-perf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:28px}
+.cat-perf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.cat-perf-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.cat-perf-name{font-size:13px;font-weight:500}
+.cat-perf-pct{font-family:var(--font-mono);font-size:16px;font-weight:700}
+.cat-perf-bar{height:6px;background:var(--border);border-radius:4px;overflow:hidden}
+.cat-perf-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1) .3s}
+.results-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:28px;overflow-x:auto}
+.results-table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+.results-table th{padding:12px 16px;text-align:left;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap}
+.results-table td{padding:13px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+.results-table tr:last-child td{border-bottom:none}
+.results-table tr:hover td{background:rgba(255,255,255,.02)}
+.score-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-family:var(--font-mono);font-size:11px;font-weight:700}
+.score-badge.pass{background:rgba(79,255,176,.15);color:var(--accent)}
+.score-badge.fail{background:rgba(255,95,135,.15);color:var(--accent3)}
+.score-badge.mid{background:rgba(255,209,102,.15);color:#ffd166}
+.empty-state{text-align:center;padding:60px 24px;color:var(--muted)}
+.empty-state .eicon{font-size:40px;margin-bottom:16px}
+.empty-state p{font-size:14px;line-height:1.6}
 
-  /* ── Category pill ── */
-  .category-pill {
-    display: inline-block;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--accent2);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 4px 12px;
-    border-radius: 4px;
-    margin-bottom: 14px;
-  }
+/* ── ADMIN LINK ── */
+.admin-link{position:fixed;bottom:20px;right:20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-family:var(--font-mono);font-size:10px;color:var(--muted);cursor:pointer;transition:color .2s,border-color .2s;z-index:100}
+.admin-link:hover{color:var(--accent);border-color:var(--accent)}
 
-  /* ── Question card ── */
-  .question-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 36px;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    animation: slideUp 0.4s ease both;
-  }
-  .question-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 16px 16px 0 0;
-  }
-  .question-num {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
-  .question-text {
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1.5;
-    color: var(--text);
-    margin-bottom: 28px;
-  }
+/* ── ANIMATIONS ── */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse-correct{0%{transform:scale(1)}50%{transform:scale(1.015)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
-  /* ── Options ── */
-  .options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .option {
-    background: var(--surface2);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    transition: border-color 0.2s, background 0.2s, transform 0.15s;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--text);
-    text-align: left;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-  }
-  .option:hover:not(:disabled) {
-    border-color: var(--accent2);
-    background: rgba(0,200,255,0.05);
-    transform: translateX(4px);
-  }
-  .option .opt-letter {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.2s, color 0.2s;
-  }
-  .option.correct {
-    border-color: var(--correct);
-    background: rgba(79,255,176,0.08);
-    animation: pulse-correct 0.4s ease;
-  }
-  .option.correct .opt-letter {
-    background: var(--correct);
-    color: #000;
-    border-color: var(--correct);
-  }
-  .option.wrong {
-    border-color: var(--wrong);
-    background: rgba(255,95,135,0.08);
-    animation: shake 0.4s ease;
-  }
-  .option.wrong .opt-letter {
-    background: var(--wrong);
-    color: #fff;
-    border-color: var(--wrong);
-  }
-  .option.disabled { cursor: default; opacity: 0.55; }
-  .option.correct.disabled, .option.wrong.disabled { opacity: 1; }
-
-  /* ── Feedback ── */
-  .feedback {
-    display: none;
-    margin-top: 20px;
-    padding: 14px 18px;
-    border-radius: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-    border-left: 3px solid;
-  }
-  .feedback.show { display: block; animation: fadeIn 0.3s ease; }
-  .feedback.correct {
-    background: rgba(79,255,176,0.07);
-    border-color: var(--correct);
-    color: #a7ffe0;
-  }
-  .feedback.wrong {
-    background: rgba(255,95,135,0.07);
-    border-color: var(--wrong);
-    color: #ffb3c6;
-  }
-  .feedback strong { font-weight: 600; display: block; margin-bottom: 4px; }
-
-  /* ── Nav ── */
-  .nav {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
-    animation: fadeIn 0.3s ease;
-  }
-  .btn {
-    background: var(--accent);
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 28px;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s;
-    display: none;
-  }
-  .btn:hover { opacity: 0.88; transform: translateY(-1px); }
-  .btn.show { display: block; }
-  .btn.secondary {
-    background: transparent;
-    color: var(--accent);
-    border: 1.5px solid var(--accent);
-    margin-right: 12px;
-  }
-
-  /* ── Score screen ── */
-  #score-screen {
-    display: none;
-    text-align: center;
-    animation: slideUp 0.5s ease both;
-  }
-  #score-screen.show { display: block; }
-  .score-ring {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 32px;
-    position: relative;
-  }
-  .score-ring svg { transform: rotate(-90deg); }
-  .score-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 10; }
-  .score-ring .ring-fill {
-    fill: none;
-    stroke: url(#scoreGrad);
-    stroke-width: 10;
-    stroke-linecap: round;
-    stroke-dasharray: 440;
-    stroke-dashoffset: 440;
-    transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
-  }
-  .score-center {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .score-num {
-    font-family: var(--font-mono);
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .score-denom { font-size: 13px; color: var(--muted); margin-top: 2px; }
-
-  .score-title {
-    font-family: var(--font-mono);
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .score-sub { color: var(--muted); font-size: 15px; margin-bottom: 40px; line-height: 1.6; }
-
-  /* ── Results breakdown ── */
-  .breakdown {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 32px;
-    text-align: left;
-  }
-  .breakdown-header {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 1px;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-  .breakdown-row {
-    padding: 14px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    font-size: 13px;
-  }
-  .breakdown-row:last-child { border-bottom: none; }
-  .breakdown-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .breakdown-q { color: var(--text); line-height: 1.4; font-size: 13px; }
-  .breakdown-a { color: var(--muted); font-size: 12px; margin-top: 3px; }
-  .breakdown-a.correct { color: var(--correct); }
-  .breakdown-a.wrong { color: var(--wrong); }
-
-  .restart-btn {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #000;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 40px;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s;
-  }
-  .restart-btn:hover { opacity: 0.88; transform: translateY(-2px); }
-
-  /* ── Category stats ── */
-  .cat-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-  .cat-stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    text-align: left;
-  }
-  .cat-stat-label {
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-    font-family: var(--font-mono);
-  }
-  .cat-stat-score {
-    font-family: var(--font-mono);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--accent);
-  }
-  .cat-stat-bar {
-    height: 3px;
-    background: var(--border);
-    border-radius: 4px;
-    margin-top: 8px;
-    overflow: hidden;
-  }
-  .cat-stat-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 4px;
-    transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.5s;
-  }
-
-  /* ── Animations ── */
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  @keyframes pulse-correct {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.015); }
-    100% { transform: scale(1); }
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
-  }
-
-  /* Streak banner */
-  .streak {
-    display: none;
-    background: rgba(79,255,176,0.1);
-    border: 1px solid rgba(79,255,176,0.25);
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--accent);
-    text-align: center;
-    margin-bottom: 16px;
-    animation: fadeIn 0.3s ease;
-  }
-  .streak.show { display: block; }
-
-  @media (max-width: 520px) {
-    .question-card { padding: 24px 20px; }
-    .question-text { font-size: 16px; }
-  }
+@media(max-width:520px){
+  .question-card{padding:24px 20px}
+  .question-text{font-size:16px}
+  .name-card,.admin-login-card{padding:32px 24px}
+}
 </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- Header -->
-  <div class="header">
+<button class="admin-link" onclick="showAdminLogin()">⚙ Admin</button>
+
+<!-- NAME ENTRY -->
+<div id="screen-name" class="screen active">
+  <div class="name-card">
     <div class="badge">Professional Training</div>
     <h1>Katalon Studio<br><span>Web &amp; API Testing</span></h1>
-    <p>Test your knowledge of Katalon Studio concepts, configurations, and best practices.</p>
+    <p>Enter your name to begin. Your results will be recorded for training review.</p>
+    <input class="name-input" id="name-input" type="text" placeholder="Your full name" maxlength="60" autocomplete="off">
+    <div class="name-error" id="name-error">Please enter your name to continue.</div>
+    <button class="start-btn" onclick="startQuiz()">Begin Quiz →</button>
+    <div class="meta-info">
+      <div class="meta-item"><div class="val">25</div><div class="lbl">Questions</div></div>
+      <div class="meta-item"><div class="val">6</div><div class="lbl">Topics</div></div>
+      <div class="meta-item"><div class="val">75%</div><div class="lbl">Pass Mark</div></div>
+    </div>
   </div>
+</div>
 
-  <!-- Quiz Area -->
-  <div id="quiz-area">
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen">
+  <div class="container">
+    <div class="quiz-header">
+      <div class="quiz-greeting" id="quiz-greeting"></div>
+      <h2>Katalon Studio Quiz</h2>
+    </div>
     <div class="progress-wrap">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
       <div class="progress-label" id="progress-label">0 / 25</div>
     </div>
-
     <div class="streak" id="streak-banner"></div>
-
     <div class="question-card" id="question-card">
       <div class="category-pill" id="q-category"></div>
       <div class="question-num" id="q-num"></div>
@@ -499,14 +218,15 @@
       <div class="options" id="options"></div>
       <div class="feedback" id="feedback"></div>
     </div>
-
     <div class="nav">
       <button class="btn" id="next-btn" onclick="nextQuestion()">Next →</button>
     </div>
   </div>
+</div>
 
-  <!-- Score Screen -->
-  <div id="score-screen">
+<!-- SCORE -->
+<div id="screen-score" class="screen">
+  <div class="container">
     <div class="score-ring">
       <svg viewBox="0 0 160 160" width="160" height="160">
         <defs>
@@ -523,405 +243,329 @@
         <div class="score-denom" id="score-denom">/ 25</div>
       </div>
     </div>
-
     <div class="score-title" id="score-title"></div>
     <div class="score-sub" id="score-sub"></div>
-
     <div class="cat-stats" id="cat-stats"></div>
-
     <div class="breakdown">
       <div class="breakdown-header">Question Review</div>
       <div id="breakdown-rows"></div>
     </div>
-
     <button class="restart-btn" onclick="restartQuiz()">↺ Retake Quiz</button>
   </div>
+</div>
 
+<!-- ADMIN LOGIN -->
+<div id="screen-admin-login" class="screen">
+  <div class="admin-login-card">
+    <div class="admin-icon">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Enter the admin password to view trainee results.</p>
+    <input class="pw-input" id="pw-input" type="password" placeholder="••••••••••••">
+    <div class="pw-error" id="pw-error">Incorrect password. Try again.</div>
+    <button class="admin-login-btn" onclick="adminLogin()">Enter Dashboard</button>
+    <br>
+    <span class="back-link" onclick="showScreen('screen-name')">← Back to Quiz</span>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="screen-admin" class="screen">
+  <div class="container wide">
+    <div class="admin-topbar">
+      <h1>Training <span>Dashboard</span></h1>
+      <div class="admin-actions">
+        <button class="admin-btn export" onclick="exportCSV()">⬇ Export CSV</button>
+        <button class="admin-btn danger" onclick="clearResults()">🗑 Clear All</button>
+        <button class="admin-btn" onclick="showScreen('screen-name')">← Back to Quiz</button>
+      </div>
+    </div>
+    <div class="kpi-row" id="kpi-row"></div>
+    <div class="section-title">Performance by Category (All Attempts)</div>
+    <div class="cat-perf-grid" id="cat-perf-grid"></div>
+    <div class="section-title">All Attempts</div>
+    <div class="results-table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Name</th><th>Score</th><th>Result</th><th>Date &amp; Time</th><th>Weakest Area</th>
+          </tr>
+        </thead>
+        <tbody id="results-tbody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script>
-const QUESTIONS = [
-  // ── Configuration & Object Identification ──
-  {
-    category: "Configuration",
-    q: "What does the Smart Wait feature in Katalon Studio primarily help with?",
-    options: ["Slowing down test execution for debugging", "Handling AJAX-heavy pages without explicit delays", "Setting timeouts for custom keywords", "Configuring browser startup speed"],
-    answer: 1,
-    explanation: "Smart Wait automatically handles AJAX-heavy pages without explicit delays, preventing flakiness due to dynamic loading. It is configured via Project > Settings > Execution > Default Smart Wait."
-  },
-  {
-    category: "Configuration",
-    q: "Where do you enable Self-Healing in Katalon Studio?",
-    options: ["Test Suite > Properties", "Project > Settings > Self-Healing", "Tools > Self-Healing Manager", "Run > Execution Options > Self-Healing"],
-    answer: 1,
-    explanation: "Self-Healing is enabled and configured from Project > Settings > Self-Healing. It automatically recovers from UI changes, reducing maintenance for unstable or evolving UIs."
-  },
-  {
-    category: "Configuration",
-    q: "Which integration in Katalon supports centralized analytics, reporting, and execution history?",
-    options: ["JIRA Integration", "Azure DevOps Integration", "Katalon TestOps", "Selenium Grid"],
-    answer: 2,
-    explanation: "Katalon TestOps provides centralized analytics, reporting, and execution history. It is configured via Project > Settings > Katalon Platform."
-  },
-  {
-    category: "Locators",
-    q: "Which locator type is recommended as the MOST stable when a unique HTML attribute is available?",
-    options: ["XPath", "CSS Selector", "Attributes (id, name, aria-*)", "Image-based matching"],
-    answer: 2,
-    explanation: "Attributes (id, name, aria-*) are the most stable locator type and are preferred when available. Dynamic or auto-generated IDs should be avoided."
-  },
-  {
-    category: "Locators",
-    q: "What is the recommended use case for the Smart Locator type?",
-    options: ["Lightweight and fast selections based on CSS styling", "Matching elements visually as a last resort", "Deep nested elements such as Shadow DOM or iFrames", "Elements with stable, unique IDs"],
-    answer: 2,
-    explanation: "Smart Locator is designed for deep nested elements such as Shadow DOM or iFrames. It is slow but reliable, and is recordable but not editable."
-  },
-  {
-    category: "Locators",
-    q: "What is the recommended Self-Healing locator fallback order?",
-    options: ["CSS > XPath > Image > Attributes > Smart Locator", "XPath > Smart Locator > Attributes > CSS > Image", "Attributes > XPath > CSS > Image > Smart Locator", "Smart Locator > XPath > CSS > Attributes > Image"],
-    answer: 1,
-    explanation: "The recommended fallback order for Self-Healing is XPath → Smart Locator → Attributes → CSS → Image, as configured in Project > Settings > Self-Healing > Web UI."
-  },
-  {
-    category: "Locators",
-    q: "Which custom attribute do the training materials recommend coordinating with developers to add for robust targeting?",
-    options: ["id", "name", "data-test-id", "aria-label"],
-    answer: 2,
-    explanation: "The training recommends using custom attributes like data-test-id for robust targeting, and coordinating with developers to implement them."
-  },
-
-  // ── Test Creation ──
-  {
-    category: "Test Creation",
-    q: "After recording with the Web Recorder, where should captured objects initially be reviewed?",
-    options: ["The Object Repository root folder", "A temporary (Temp) folder", "The Test Data folder", "The Keywords folder"],
-    answer: 1,
-    explanation: "After recording, objects are captured in a Temp folder. Best practice is to review and rename them before moving to relevant repository folders."
-  },
-  {
-    category: "Test Creation",
-    q: "What is the primary benefit of Katalon's Studio Assist (AI assistant)?",
-    options: ["Automatically runs regression suites on a schedule", "Generates test steps from natural language inputs or requirements", "Connects directly to Jira to import test cases", "Converts recorded tests to Groovy scripts"],
-    answer: 1,
-    explanation: "Studio Assist is an AI-powered code assistant that generates test cases from natural language inputs, requirements, or test ideas, accelerating test authoring."
-  },
-  {
-    category: "Test Creation",
-    q: "In Script Mode, how would you call a built-in keyword to click a web element?",
-    options: ["Keywords.click()", "WebUI.click()", "Katalon.clickElement()", "Test.perform('click')"],
-    answer: 1,
-    explanation: "In Script Mode, built-in web keywords are called with the WebUI prefix, e.g., WebUI.click(). Custom keywords use the format CustomKeywords.'path.to.method'()."
-  },
-  {
-    category: "Test Creation",
-    q: "Which of the following is a valid way to import API test objects into Katalon?",
-    options: ["From a Postman collection", "From a JUnit XML file", "From a Maven POM file", "From a Selenium IDE export"],
-    answer: 0,
-    explanation: "Katalon supports importing from Postman collections, as well as Swagger/OpenAPI (YAML/JSON), WADL, WSDL, and SoapUI. JUnit XML, Maven POM, and Selenium IDE exports are not supported import sources."
-  },
-  {
-    category: "Test Creation",
-    q: "Which API test creation mode allows you to type your intent in plain English (e.g., 'Call login API and verify status 200') and have Katalon auto-generate code?",
-    options: ["Keyword Mode", "Import Mode with AI", "Script Mode with StudioAssist", "Object Spy Mode"],
-    answer: 2,
-    explanation: "Script Mode with AI (StudioAssist) allows you to type intent in plain English and auto-generate API calls, assertions, and parameter handling."
-  },
-
-  // ── Debugging ──
-  {
-    category: "Debugging",
-    q: "In which view is breakpoint-based debugging available in Katalon Studio?",
-    options: ["Manual Mode", "Script Mode", "Both Manual and Script Mode", "Debug Panel only"],
-    answer: 1,
-    explanation: "Breakpoint support is only available in Script Mode. You set breakpoints by clicking in the gutter next to the code line, then start debug mode using the debug icon (🐞)."
-  },
-  {
-    category: "Debugging",
-    q: "Which debug control allows you to enter into the logic of a called keyword?",
-    options: ["Step Over", "Step Out", "Step Into", "Resume"],
-    answer: 2,
-    explanation: "Step Into dives into called keywords. Step Over moves to the next line, Step Out exits the current keyword, and Resume continues execution."
-  },
-  {
-    category: "Debugging",
-    q: "How does Object Spy differ from Self-Healing for fixing locators?",
-    options: ["Object Spy is automated; Self-Healing is manual", "Object Spy is manual locate-and-fix; Self-Healing is smart auto-correction", "Object Spy only works for API objects; Self-Healing is for web only", "They are identical features with different names"],
-    answer: 1,
-    explanation: "Object Spy is a manual tool to highlight and capture locators, while Self-Healing is an automated mechanism that detects broken locators at runtime and suggests corrections."
-  },
-
-  // ── Test Data & Repeatability ──
-  {
-    category: "Test Data",
-    q: "What is the recommended maximum dataset size for Internal Data files to maintain maintainability?",
-    options: ["100–200 rows", "50–100 rows", "5–20 rows", "No limit recommended"],
-    answer: 2,
-    explanation: "The training recommends keeping Internal Data datasets small (5–20 rows) for maintainability. Large regression datasets should use Excel or CSV files instead."
-  },
-  {
-    category: "Test Data",
-    q: "Where should Excel/CSV test data files be stored within a Katalon project?",
-    options: ["Root of the project directory", "Include > Resources > Test Data", "Test Cases > Data", "Object Repository > Data"],
-    answer: 1,
-    explanation: "CSV and Excel files should be placed under Include > Resources > Test Data within the project. This keeps data organized and portable, avoiding absolute paths."
-  },
-  {
-    category: "Test Data",
-    q: "When binding test data to a test case, which combination strategy executes ALL rows sequentially, each exactly once?",
-    options: ["One-to-One", "Range", "All Combinations", "All"],
-    answer: 3,
-    explanation: "The 'All' combination strategy causes each data row to execute once. 'All Combinations' creates a full matrix, 'One-to-One' maps Row N to Row N, and 'Range' targets specific rows."
-  },
-  {
-    category: "Test Data",
-    q: "What is the main purpose of Execution Profiles in Katalon Studio?",
-    options: ["To record browser interactions automatically", "To store Global Variables for different environments (Dev, QA, UAT, Prod)", "To package test cases for deployment", "To configure locator strategies per environment"],
-    answer: 1,
-    explanation: "Profiles allow you to define reusable Global Variables for different environments, decoupling test logic from environment-specific data and enabling scalable execution."
-  },
-  {
-    category: "Test Data",
-    q: "How do you reference a Global Variable from an Execution Profile inside a test case?",
-    options: ["GlobalVariable.VARIABLE_NAME", "${GlobalVariable.VARIABLE_NAME}", "@GlobalVariable.VARIABLE_NAME", "Profiles.get('VARIABLE_NAME')"],
-    answer: 1,
-    explanation: "Global Variables are referenced using the syntax ${GlobalVariable.VARIABLE_NAME} within test cases."
-  },
-
-  // ── Test Execution ──
-  {
-    category: "Test Execution",
-    q: "What is the key difference between a Test Suite and a Test Suite Collection?",
-    options: ["Test Suites support data binding; Test Suite Collections do not", "Test Suite Collections enable parallel execution and cross-browser testing across multiple suites", "Test Suites can run in CLI; Test Suite Collections cannot", "Test Suite Collections are for API tests only"],
-    answer: 1,
-    explanation: "Test Suite Collections contain multiple Test Suites and enable parallel execution, cross-browser testing, and multi-profile execution — capabilities not available in a single Test Suite."
-  },
-  {
-    category: "Test Execution",
-    q: "Where in Katalon Studio do you configure browser-specific capabilities such as args, prefs, and WebDriver capabilities?",
-    options: ["Test Suite > Execution Settings", "Project > Settings > Desired Capabilities > Web UI > [Browser Type]", "Tools > WebDriver > Browser Config", "Run > Advanced Options > Capabilities"],
-    answer: 1,
-    explanation: "Browser capabilities (args, prefs, top-level capabilities) are configured via Project > Settings > Desired Capabilities > Web UI > [Browser Type]."
-  },
-  {
-    category: "Test Execution",
-    q: "Which browser argument runs the browser in headless mode for faster execution?",
-    options: ["--no-gui", "--disable-display", "--headless", "--silent"],
-    answer: 2,
-    explanation: "The --headless argument runs the browser in headless mode for faster execution. It is often combined with --disable-gpu for compatibility."
-  },
-  {
-    category: "Test Execution",
-    q: "What is required to activate the Katalon Runtime Engine when generating a CLI command?",
-    options: ["A valid Katalon license file (.lic)", "A Katalon API key", "A Jenkins integration token", "A TestOps project ID"],
-    answer: 1,
-    explanation: "When generating a CLI command via the Command Builder, you must enter your Katalon API key, which is required to activate the Runtime Engine for CLI execution."
-  },
-  {
-    category: "Test Execution",
-    q: "In a Linux cron job entry '0 2 * * *', when would the Katalon test batch run?",
-    options: ["Every 2 minutes", "At 2:00 AM every day", "At 2:00 PM on weekdays", "Every hour at minute 2"],
-    answer: 1,
-    explanation: "The cron expression '0 2 * * *' means: minute 0, hour 2, every day, every month, every weekday — which translates to 2:00 AM every day."
-  }
+// ── QUESTIONS ──────────────────────────────────────────────────────────
+const ALL_QUESTIONS=[
+  {category:"Configuration",q:"What does the Smart Wait feature in Katalon Studio primarily help with?",options:["Slowing down test execution for debugging","Handling AJAX-heavy pages without explicit delays","Setting timeouts for custom keywords","Configuring browser startup speed"],answer:1,explanation:"Smart Wait automatically handles AJAX-heavy pages without explicit delays, preventing flakiness due to dynamic loading. Configure it via Project > Settings > Execution > Default Smart Wait."},
+  {category:"Configuration",q:"Where do you enable Self-Healing in Katalon Studio?",options:["Test Suite > Properties","Project > Settings > Self-Healing","Tools > Self-Healing Manager","Run > Execution Options > Self-Healing"],answer:1,explanation:"Self-Healing is enabled from Project > Settings > Self-Healing. It automatically recovers from UI changes, reducing maintenance for unstable or evolving UIs."},
+  {category:"Configuration",q:"Which integration provides centralized analytics, reporting, and execution history?",options:["JIRA Integration","Azure DevOps Integration","Katalon TestOps","Selenium Grid"],answer:2,explanation:"Katalon TestOps provides centralized analytics, reporting, and execution history. Configured via Project > Settings > Katalon Platform."},
+  {category:"Locators",q:"Which locator type is most stable when a unique HTML attribute is available?",options:["XPath","CSS Selector","Attributes (id, name, aria-*)","Image-based matching"],answer:2,explanation:"Attributes (id, name, aria-*) are the most stable locator type and are preferred when available. Dynamic or auto-generated IDs should be avoided."},
+  {category:"Locators",q:"What is the recommended use case for the Smart Locator type?",options:["Lightweight CSS-based selections","Visual element matching as a last resort","Deep nested elements such as Shadow DOM or iFrames","Elements with stable, unique IDs"],answer:2,explanation:"Smart Locator is designed for deep nested elements such as Shadow DOM or iFrames. It is slow but reliable, and recordable but not editable."},
+  {category:"Locators",q:"What is the recommended Self-Healing locator fallback order?",options:["CSS > XPath > Image > Attributes > Smart Locator","XPath > Smart Locator > Attributes > CSS > Image","Attributes > XPath > CSS > Image > Smart Locator","Smart Locator > XPath > CSS > Attributes > Image"],answer:1,explanation:"The recommended fallback order is XPath → Smart Locator → Attributes → CSS → Image, set in Project > Settings > Self-Healing > Web UI."},
+  {category:"Locators",q:"Which custom HTML attribute do the training materials recommend for robust element targeting?",options:["id","name","data-test-id","aria-label"],answer:2,explanation:"The training recommends using data-test-id for robust targeting, coordinating with developers to add it to application elements."},
+  {category:"Test Creation",q:"After using the Web Recorder, where should captured objects initially be reviewed?",options:["The Object Repository root folder","A temporary (Temp) folder","The Test Data folder","The Keywords folder"],answer:1,explanation:"After recording, objects land in a Temp folder. Best practice is to review, rename, and then move them to appropriate repository folders."},
+  {category:"Test Creation",q:"What is the primary benefit of Katalon's Studio Assist?",options:["Automatically runs regression suites on a schedule","Generates test steps from natural language inputs or requirements","Connects directly to Jira to import test cases","Converts recorded tests to Groovy scripts"],answer:1,explanation:"Studio Assist is an AI-powered assistant that generates test cases from natural language inputs, requirements, or test ideas, accelerating test authoring."},
+  {category:"Test Creation",q:"In Script Mode, how do you call a built-in keyword to click a web element?",options:["Keywords.click()","WebUI.click()","Katalon.clickElement()","Test.perform('click')"],answer:1,explanation:"Built-in web keywords use the WebUI prefix in Script Mode, e.g., WebUI.click(). Custom keywords use CustomKeywords.'path.to.method'()."},
+  {category:"Test Creation",q:"Which of the following is a valid source for importing API test objects into Katalon?",options:["A Postman collection","A JUnit XML file","A Maven POM file","A Selenium IDE export"],answer:0,explanation:"Katalon supports importing from Postman collections, as well as Swagger/OpenAPI (YAML/JSON), WADL, WSDL, and SoapUI."},
+  {category:"Test Creation",q:"Which API test creation mode lets you type intent in plain English to auto-generate code?",options:["Keyword Mode","Import Mode with AI","Script Mode with StudioAssist","Object Spy Mode"],answer:2,explanation:"Script Mode with StudioAssist lets you describe intent in plain English (e.g., 'Call login API and verify status 200') and auto-generates the corresponding test code."},
+  {category:"Debugging",q:"In which view is breakpoint-based debugging available in Katalon Studio?",options:["Manual Mode","Script Mode","Both Manual and Script Mode","Debug Panel only"],answer:1,explanation:"Breakpoints are only available in Script Mode. Click in the gutter next to a code line to set one, then launch debug mode using the debug icon (🐞)."},
+  {category:"Debugging",q:"Which debug control lets you step into the logic of a called keyword?",options:["Step Over","Step Out","Step Into","Resume"],answer:2,explanation:"Step Into dives into called keywords. Step Over moves to the next line, Step Out exits the current keyword, and Resume continues execution."},
+  {category:"Debugging",q:"How does Object Spy differ from Self-Healing for fixing broken locators?",options:["Object Spy is automated; Self-Healing is manual","Object Spy is manual locate-and-fix; Self-Healing is smart auto-correction","Object Spy only works for API; Self-Healing is web-only","They are identical features with different names"],answer:1,explanation:"Object Spy is a manual tool for highlighting and capturing locators, while Self-Healing automatically detects broken locators at runtime and suggests corrections."},
+  {category:"Test Data",q:"What is the recommended maximum dataset size for Internal Data files?",options:["100–200 rows","50–100 rows","5–20 rows","No limit recommended"],answer:2,explanation:"Internal Data should be kept to 5–20 rows for maintainability. Larger regression datasets should use Excel or CSV files instead."},
+  {category:"Test Data",q:"Where should Excel/CSV test data files be stored within a Katalon project?",options:["Root of the project directory","Include > Resources > Test Data","Test Cases > Data","Object Repository > Data"],answer:1,explanation:"CSV and Excel files should be placed under Include > Resources > Test Data to keep data organised and portable, avoiding absolute file paths."},
+  {category:"Test Data",q:"Which data binding strategy executes every data row exactly once?",options:["One-to-One","Range","All Combinations","All"],answer:3,explanation:"The 'All' strategy executes each row once. 'All Combinations' creates a full cross-product matrix, 'One-to-One' maps Row N to Row N, and 'Range' runs specific rows."},
+  {category:"Test Data",q:"What is the main purpose of Execution Profiles in Katalon Studio?",options:["Recording browser interactions automatically","Storing Global Variables for different environments (Dev, QA, UAT, Prod)","Packaging test cases for deployment","Configuring locator strategies per environment"],answer:1,explanation:"Profiles store reusable Global Variables for different environments, decoupling test logic from environment-specific data and enabling scalable cross-environment execution."},
+  {category:"Test Data",q:"What syntax is used to reference a Global Variable inside a test case?",options:["GlobalVariable.VARIABLE_NAME","${GlobalVariable.VARIABLE_NAME}","@GlobalVariable.VARIABLE_NAME","Profiles.get('VARIABLE_NAME')"],answer:1,explanation:"Global Variables are referenced using ${GlobalVariable.VARIABLE_NAME} within Katalon test cases."},
+  {category:"Test Execution",q:"What key capability do Test Suite Collections add over a single Test Suite?",options:["Support for data binding","Parallel execution and cross-browser/multi-profile testing","CLI execution support","API test support"],answer:1,explanation:"Test Suite Collections group multiple Test Suites and enable parallel execution, cross-browser testing, and multi-profile execution — not available in a single Test Suite."},
+  {category:"Test Execution",q:"Where do you configure browser-specific capabilities such as args, prefs, and WebDriver settings?",options:["Test Suite > Execution Settings","Project > Settings > Desired Capabilities > Web UI > [Browser Type]","Tools > WebDriver > Browser Config","Run > Advanced Options > Capabilities"],answer:1,explanation:"Browser capabilities (args, prefs, top-level capabilities) are configured via Project > Settings > Desired Capabilities > Web UI > [Browser Type]."},
+  {category:"Test Execution",q:"Which browser argument runs the browser in headless mode for faster execution?",options:["--no-gui","--disable-display","--headless","--silent"],answer:2,explanation:"The --headless argument runs the browser without a visible UI for faster execution. It is often combined with --disable-gpu for compatibility."},
+  {category:"Test Execution",q:"What is required to activate the Katalon Runtime Engine when generating a CLI command?",options:["A valid Katalon license file (.lic)","A Katalon API key","A Jenkins integration token","A TestOps project ID"],answer:1,explanation:"A Katalon API key must be entered in the Command Builder. It is required to activate the Runtime Engine for CLI/console execution."},
+  {category:"Test Execution",q:"In the Linux cron expression '0 2 * * *', when does the job run?",options:["Every 2 minutes","At 2:00 AM every day","At 2:00 PM on weekdays","Every hour at minute 2"],answer:1,explanation:"'0 2 * * *' means: minute 0, hour 2, any day, any month, any weekday — i.e., 2:00 AM every day."}
 ];
 
-let currentQ = 0;
-let score = 0;
-let answered = false;
-let userAnswers = [];
-let streak = 0;
-let categoryScores = {};
+const PASS_MARK=0.75;
+const ADMIN_PW="KatalonTrue";
+const STORE_KEY="katalon_quiz_v2";
+const CATS=["Configuration","Locators","Test Creation","Debugging","Test Data","Test Execution"];
 
-function shuffle(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
+// ── STATE ──────────────────────────────────────────────────────────────
+let curQ=0,score=0,answered=false,userAnswers=[],streak=0,catScores={};
+let traineeName='',questions=[];
+
+// ── SCREENS ────────────────────────────────────────────────────────────
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-const questions = shuffle(QUESTIONS);
+// ── NAME ENTRY ─────────────────────────────────────────────────────────
+document.getElementById('name-input').addEventListener('keydown',e=>{if(e.key==='Enter')startQuiz()});
 
-function initCategoryScores() {
-  questions.forEach(q => {
-    if (!categoryScores[q.category]) categoryScores[q.category] = { correct: 0, total: 0 };
-    categoryScores[q.category].total++;
-  });
+function startQuiz(){
+  const v=document.getElementById('name-input').value.trim();
+  if(!v){document.getElementById('name-error').classList.add('show');return;}
+  document.getElementById('name-error').classList.remove('show');
+  traineeName=v;
+  document.getElementById('quiz-greeting').textContent=`Good luck, ${v.split(' ')[0]}!`;
+  initQuiz();
+  showScreen('screen-quiz');
 }
 
-function renderQuestion() {
-  const q = questions[currentQ];
-  answered = false;
-
-  document.getElementById('q-category').textContent = q.category;
-  document.getElementById('q-num').textContent = `Question ${currentQ + 1} of ${questions.length}`;
-  document.getElementById('q-text').textContent = q.q;
-
-  const optionsEl = document.getElementById('options');
-  optionsEl.innerHTML = '';
-  const letters = ['A', 'B', 'C', 'D'];
-
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option';
-    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
-    btn.onclick = () => selectAnswer(i);
-    optionsEl.appendChild(btn);
-  });
-
-  const fb = document.getElementById('feedback');
-  fb.className = 'feedback';
-  fb.innerHTML = '';
-
-  document.getElementById('next-btn').className = 'btn';
-
-  // Update progress
-  const pct = (currentQ / questions.length) * 100;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-label').textContent = `${currentQ} / ${questions.length}`;
-
-  // Streak banner
-  const sb = document.getElementById('streak-banner');
-  if (streak >= 3) {
-    sb.textContent = `🔥 ${streak} correct in a row!`;
-    sb.className = 'streak show';
-  } else {
-    sb.className = 'streak';
-  }
-
-  // Animate card
-  const card = document.getElementById('question-card');
-  card.style.animation = 'none';
-  card.offsetHeight;
-  card.style.animation = 'slideUp 0.4s ease both';
-}
-
-function selectAnswer(idx) {
-  if (answered) return;
-  answered = true;
-
-  const q = questions[currentQ];
-  const opts = document.querySelectorAll('.option');
-  const isCorrect = idx === q.answer;
-
-  opts.forEach((opt, i) => {
-    opt.disabled = true;
-    opt.classList.add('disabled');
-    if (i === q.answer) opt.classList.add('correct');
-    if (i === idx && !isCorrect) opt.classList.add('wrong');
-  });
-
-  const fb = document.getElementById('feedback');
-  if (isCorrect) {
-    score++;
-    streak++;
-    categoryScores[q.category] = categoryScores[q.category] || { correct: 0, total: 0 };
-    categoryScores[q.category].correct++;
-    fb.className = 'feedback correct show';
-    fb.innerHTML = `<strong>✓ Correct!</strong>${q.explanation}`;
-  } else {
-    streak = 0;
-    fb.className = 'feedback wrong show';
-    fb.innerHTML = `<strong>✗ Not quite.</strong>${q.explanation}`;
-  }
-
-  userAnswers.push({ q: q.q, yourAnswer: q.options[idx], correctAnswer: q.options[q.answer], correct: isCorrect });
-
-  const nextLabel = currentQ < questions.length - 1 ? 'Next →' : 'See Results';
-  const nb = document.getElementById('next-btn');
-  nb.textContent = nextLabel;
-  nb.className = 'btn show';
-
-  // Update streak banner mid-answer
-  const sb = document.getElementById('streak-banner');
-  if (streak >= 3) {
-    sb.textContent = `🔥 ${streak} correct in a row!`;
-    sb.className = 'streak show';
-  }
-}
-
-function nextQuestion() {
-  currentQ++;
-  if (currentQ >= questions.length) {
-    showScore();
-  } else {
-    renderQuestion();
-  }
-}
-
-function showScore() {
-  document.getElementById('quiz-area').style.display = 'none';
-  const ss = document.getElementById('score-screen');
-  ss.className = 'show';
-
-  const pct = score / questions.length;
-  document.getElementById('score-num').textContent = score;
-  document.getElementById('score-denom').textContent = `/ ${questions.length}`;
-
-  let title, sub;
-  if (pct >= 0.9) { title = '🏆 Outstanding!'; sub = 'Excellent mastery of Katalon Studio.'; }
-  else if (pct >= 0.75) { title = '✅ Well Done!'; sub = 'Strong understanding with a few areas to review.'; }
-  else if (pct >= 0.6) { title = '📘 Good Effort'; sub = 'Solid foundation — revisit the sections below.'; }
-  else { title = '🔄 Keep Practicing'; sub = 'Review the training material and retake the quiz.'; }
-
-  document.getElementById('score-title').textContent = title;
-  document.getElementById('score-sub').textContent = sub + ` You scored ${score} out of ${questions.length} (${Math.round(pct * 100)}%).`;
-
-  // Animate ring
-  const circumference = 440;
-  const offset = circumference - (pct * circumference);
-  setTimeout(() => {
-    document.getElementById('ring-fill').style.strokeDashoffset = offset;
-  }, 100);
-
-  // Category stats
-  const catEl = document.getElementById('cat-stats');
-  catEl.innerHTML = '';
-  Object.entries(categoryScores).forEach(([cat, data]) => {
-    const p = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
-    catEl.innerHTML += `
-      <div class="cat-stat">
-        <div class="cat-stat-label">${cat}</div>
-        <div class="cat-stat-score">${data.correct}/${data.total}</div>
-        <div class="cat-stat-bar"><div class="cat-stat-fill" style="width:${p}%"></div></div>
-      </div>`;
-  });
-
-  // Breakdown
-  const brEl = document.getElementById('breakdown-rows');
-  brEl.innerHTML = userAnswers.map(a => `
-    <div class="breakdown-row">
-      <div class="breakdown-icon">${a.correct ? '✅' : '❌'}</div>
-      <div>
-        <div class="breakdown-q">${a.q}</div>
-        ${!a.correct ? `<div class="breakdown-a wrong">Your answer: ${a.yourAnswer}</div>
-        <div class="breakdown-a correct">Correct: ${a.correctAnswer}</div>` : `<div class="breakdown-a correct">${a.correctAnswer}</div>`}
-      </div>
-    </div>`).join('');
-}
-
-function restartQuiz() {
-  currentQ = 0;
-  score = 0;
-  answered = false;
-  userAnswers = [];
-  streak = 0;
-  categoryScores = {};
-
-  // Reshuffle
-  for (let i = questions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [questions[i], questions[j]] = [questions[j], questions[i]];
-  }
-
-  initCategoryScores();
-  document.getElementById('score-screen').className = '';
-  document.getElementById('quiz-area').style.display = 'block';
-  document.getElementById('ring-fill').style.strokeDashoffset = 440;
+// ── QUIZ ───────────────────────────────────────────────────────────────
+function initQuiz(){
+  curQ=0;score=0;answered=false;userAnswers=[];streak=0;catScores={};
+  CATS.forEach(c=>{catScores[c]={correct:0,total:0}});
+  questions=[...ALL_QUESTIONS].sort(()=>Math.random()-.5);
+  questions.forEach(q=>{catScores[q.category].total++});
   renderQuestion();
 }
 
-// Init
-initCategoryScores();
-renderQuestion();
+function renderQuestion(){
+  const q=questions[curQ];
+  answered=false;
+  document.getElementById('q-category').textContent=q.category;
+  document.getElementById('q-num').textContent=`Question ${curQ+1} of ${questions.length}`;
+  document.getElementById('q-text').textContent=q.q;
+  const optEl=document.getElementById('options');
+  optEl.innerHTML='';
+  ['A','B','C','D'].forEach((L,i)=>{
+    const b=document.createElement('button');
+    b.className='option';
+    b.innerHTML=`<span class="opt-letter">${L}</span><span>${q.options[i]}</span>`;
+    b.onclick=()=>selectAnswer(i);
+    optEl.appendChild(b);
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback';fb.innerHTML='';
+  document.getElementById('next-btn').className='btn';
+  const pct=(curQ/questions.length)*100;
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-label').textContent=`${curQ} / ${questions.length}`;
+  const sb=document.getElementById('streak-banner');
+  if(streak>=3){sb.textContent=`🔥 ${streak} correct in a row!`;sb.className='streak show';}else sb.className='streak';
+  const card=document.getElementById('question-card');
+  card.style.animation='none';card.offsetHeight;card.style.animation='slideUp .4s ease both';
+}
+
+function selectAnswer(idx){
+  if(answered)return;
+  answered=true;
+  const q=questions[curQ];
+  const opts=document.querySelectorAll('.option');
+  const ok=idx===q.answer;
+  opts.forEach((o,i)=>{
+    o.disabled=true;o.classList.add('disabled');
+    if(i===q.answer)o.classList.add('correct');
+    if(i===idx&&!ok)o.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  if(ok){
+    score++;streak++;catScores[q.category].correct++;
+    fb.className='feedback correct show';
+    fb.innerHTML=`<strong>✓ Correct!</strong>${q.explanation}`;
+  }else{
+    streak=0;
+    fb.className='feedback wrong show';
+    fb.innerHTML=`<strong>✗ Not quite.</strong>${q.explanation}`;
+  }
+  userAnswers.push({q:q.q,category:q.category,yours:q.options[idx],correct:q.options[q.answer],ok});
+  const nb=document.getElementById('next-btn');
+  nb.textContent=curQ<questions.length-1?'Next →':'See Results';
+  nb.className='btn show';
+  const sb=document.getElementById('streak-banner');
+  if(streak>=3){sb.textContent=`🔥 ${streak} correct in a row!`;sb.className='streak show';}
+}
+
+function nextQuestion(){
+  curQ++;
+  if(curQ>=questions.length)showScore();
+  else renderQuestion();
+}
+
+// ── SCORE ──────────────────────────────────────────────────────────────
+function showScore(){
+  showScreen('screen-score');
+  const pct=score/questions.length;
+  document.getElementById('score-num').textContent=score;
+  document.getElementById('score-denom').textContent=`/ ${questions.length}`;
+  let title,sub;
+  if(pct>=.9){title='🏆 Outstanding!';sub='Excellent mastery of Katalon Studio.';}
+  else if(pct>=.75){title='✅ Well Done!';sub='Strong understanding with a few areas to review.';}
+  else if(pct>=.6){title='📘 Good Effort';sub='Solid foundation — revisit the sections below.';}
+  else{title='🔄 Keep Practicing';sub='Review the training material and retake the quiz.';}
+  document.getElementById('score-title').textContent=title;
+  document.getElementById('score-sub').textContent=sub+` You scored ${score} out of ${questions.length} (${Math.round(pct*100)}%).`;
+  setTimeout(()=>{document.getElementById('ring-fill').style.strokeDashoffset=440-(pct*440);},100);
+  const catEl=document.getElementById('cat-stats');
+  catEl.innerHTML='';
+  CATS.forEach(c=>{
+    const d=catScores[c];if(!d||d.total===0)return;
+    const p=Math.round((d.correct/d.total)*100);
+    catEl.innerHTML+=`<div class="cat-stat"><div class="cat-stat-label">${c}</div><div class="cat-stat-score">${d.correct}/${d.total}</div><div class="cat-stat-bar"><div class="cat-stat-fill" style="width:${p}%"></div></div></div>`;
+  });
+  document.getElementById('breakdown-rows').innerHTML=userAnswers.map(a=>`
+    <div class="breakdown-row">
+      <div class="breakdown-icon">${a.ok?'✅':'❌'}</div>
+      <div>
+        <div class="breakdown-q">${a.q}</div>
+        ${!a.ok?`<div class="breakdown-a w">Your answer: ${a.yours}</div><div class="breakdown-a c">Correct: ${a.correct}</div>`:`<div class="breakdown-a c">${a.correct}</div>`}
+      </div>
+    </div>`).join('');
+  saveResult({name:traineeName,score,total:questions.length,pct:Math.round(pct*100),passed:pct>=PASS_MARK,catScores:JSON.parse(JSON.stringify(catScores)),ts:new Date().toISOString()});
+}
+
+function restartQuiz(){
+  document.getElementById('ring-fill').style.strokeDashoffset=440;
+  document.getElementById('name-input').value='';
+  showScreen('screen-name');
+}
+
+// ── STORAGE ────────────────────────────────────────────────────────────
+function saveResult(r){try{const a=getResults();a.push(r);localStorage.setItem(STORE_KEY,JSON.stringify(a));}catch(e){}}
+function getResults(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'[]');}catch(e){return[];}}
+
+// ── ADMIN ──────────────────────────────────────────────────────────────
+function showAdminLogin(){
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-error').classList.remove('show');
+  showScreen('screen-admin-login');
+}
+document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin()});
+
+function adminLogin(){
+  if(document.getElementById('pw-input').value===ADMIN_PW){
+    document.getElementById('pw-error').classList.remove('show');
+    renderDashboard();
+    showScreen('screen-admin');
+  }else{
+    document.getElementById('pw-error').classList.add('show');
+    document.getElementById('pw-input').value='';
+  }
+}
+
+function renderDashboard(){
+  const results=getResults();
+  const total=results.length;
+  const passed=results.filter(r=>r.passed).length;
+  const avg=total?Math.round(results.reduce((s,r)=>s+r.pct,0)/total):0;
+  const high=total?Math.max(...results.map(r=>r.pct)):0;
+
+  document.getElementById('kpi-row').innerHTML=`
+    <div class="kpi blue"><div class="kpi-label">Total Attempts</div><div class="kpi-value">${total}</div><div class="kpi-sub">all time</div></div>
+    <div class="kpi green"><div class="kpi-label">Pass Rate</div><div class="kpi-value">${total?Math.round((passed/total)*100):0}%</div><div class="kpi-sub">${passed} of ${total} passed</div></div>
+    <div class="kpi yellow"><div class="kpi-label">Avg Score</div><div class="kpi-value">${avg}%</div><div class="kpi-sub">pass mark: 75%</div></div>
+    <div class="kpi ${high>=75?'green':'red'}"><div class="kpi-label">Top Score</div><div class="kpi-value">${high}%</div><div class="kpi-sub">best attempt</div></div>`;
+
+  const catGrid=document.getElementById('cat-perf-grid');
+  if(!total){
+    catGrid.innerHTML='<p style="color:var(--muted);font-size:13px;grid-column:1/-1;padding:8px 0">No results yet.</p>';
+  }else{
+    const agg={};
+    CATS.forEach(c=>{agg[c]={correct:0,total:0}});
+    results.forEach(r=>{
+      if(r.catScores)Object.entries(r.catScores).forEach(([c,d])=>{if(agg[c]){agg[c].correct+=d.correct;agg[c].total+=d.total;}});
+    });
+    catGrid.innerHTML=CATS.map(c=>{
+      const d=agg[c];const p=d.total?Math.round((d.correct/d.total)*100):0;
+      const col=p>=75?'#4fffb0':p>=50?'#ffd166':'#ff5f87';
+      return `<div class="cat-perf"><div class="cat-perf-top"><div class="cat-perf-name">${c}</div><div class="cat-perf-pct" style="color:${col}">${p}%</div></div><div class="cat-perf-bar"><div class="cat-perf-fill" style="width:${p}%;background:${col}"></div></div></div>`;
+    }).join('');
+  }
+
+  const tbody=document.getElementById('results-tbody');
+  if(!total){
+    tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="eicon">📋</div><p>No quiz attempts yet.<br>Results will appear here once trainees complete the quiz.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML=[...results].reverse().map((r,i)=>{
+    const bc=r.pct>=75?'pass':r.pct>=60?'mid':'fail';
+    const bl=r.pct>=75?'PASS':'FAIL';
+    const d=new Date(r.ts);
+    const ds=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const ts=d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    let weak='—';
+    if(r.catScores){
+      let minP=Infinity,minC=null;
+      Object.entries(r.catScores).forEach(([c,data])=>{if(data.total>0){const p=data.correct/data.total;if(p<minP){minP=p;minC=c;}}});
+      if(minC)weak=`${minC} (${Math.round(minP*100)}%)`;
+    }
+    return `<tr>
+      <td style="color:var(--muted);font-family:var(--font-mono);font-size:11px">${total-i}</td>
+      <td style="font-weight:500">${esc(r.name)}</td>
+      <td style="font-family:var(--font-mono)">${r.score}/${r.total} <span style="color:var(--muted)">(${r.pct}%)</span></td>
+      <td><span class="score-badge ${bc}">${bl}</span></td>
+      <td style="color:var(--muted);font-size:12px">${ds} ${ts}</td>
+      <td style="color:var(--accent3);font-size:12px">${weak}</td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function clearResults(){
+  if(confirm('Clear ALL quiz results? This cannot be undone.')){
+    localStorage.removeItem(STORE_KEY);
+    renderDashboard();
+  }
+}
+
+function exportCSV(){
+  const results=getResults();
+  if(!results.length){alert('No results to export.');return;}
+  const headers=['#','Name','Score','Percentage','Passed','Timestamp',...CATS];
+  const rows=results.map((r,i)=>{
+    const cats=CATS.map(c=>{const d=r.catScores&&r.catScores[c];return d?`${d.correct}/${d.total}`:'—';});
+    return [i+1,`"${r.name}"`,`${r.score}/${r.total}`,`${r.pct}%`,r.passed?'Yes':'No',r.ts,...cats];
+  });
+  const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`katalon-quiz-results-${Date.now()}.csv`;
+  a.click();
+}
 </script>
 </body>
 </html>
