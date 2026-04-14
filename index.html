@@ -216,6 +216,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
     <h1>Katalon Studio<br><span>Web &amp; API Testing</span></h1>
     <p>Enter your name to begin. Your results will be recorded for training review.</p>
     <input class="name-input" id="name-input" type="text" placeholder="Your full name" maxlength="60" autocomplete="off">
+    <input class="name-input" id="org-input" type="text" placeholder="Your organisation" maxlength="80" autocomplete="off">
     <div class="name-error" id="name-error">Please enter your name to continue.</div>
     <button class="start-btn" onclick="startQuiz()">Begin Quiz →</button>
     <div class="meta-info">
@@ -314,7 +315,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <table class="results-table">
         <thead>
           <tr>
-            <th>#</th><th>Name</th><th>Score</th><th>Result</th><th>Date &amp; Time</th><th>Weakest Area</th>
+            <th>#</th><th>Name</th><th>Organisation</th><th>Score</th><th>Result</th><th>Date &amp; Time</th><th>Weakest Area</th>
           </tr>
         </thead>
         <tbody id="results-tbody"></tbody>
@@ -421,7 +422,7 @@ const CATS=["Configuration","Locators","Test Creation","Debugging","Test Data","
 
 // ── STATE ──────────────────────────────────────────────────────────────
 let curQ=0,score=0,answered=false,userAnswers=[],streak=0,catScores={};
-let traineeName='',questions=[];
+let traineeName='',traineeOrg='',questions=[];
 
 // ── SCREENS ────────────────────────────────────────────────────────────
 function showScreen(id){
@@ -437,6 +438,7 @@ function startQuiz(){
   if(!v){document.getElementById('name-error').classList.add('show');return;}
   document.getElementById('name-error').classList.remove('show');
   traineeName=v;
+  traineeOrg=document.getElementById('org-input').value.trim();
   document.getElementById('quiz-greeting').textContent='Good luck, '+v.split(' ')[0]+'!';
   initQuiz();
   showScreen('screen-quiz');
@@ -729,12 +731,13 @@ function showScore(){
              :'<div class="breakdown-a c">'+a.correct+'</div>')
       +'</div></div>';
   }).join('');
-  saveResult({name:traineeName,score,total:questions.length,pct:Math.round(pct*100),passed:pct>=PASS_MARK,catScores:JSON.parse(JSON.stringify(catScores)),ts:new Date().toISOString()});
+  saveResult({name:traineeName,org:traineeOrg,score,total:questions.length,pct:Math.round(pct*100),passed:pct>=PASS_MARK,catScores:JSON.parse(JSON.stringify(catScores)),ts:new Date().toISOString()});
 }
 
 function restartQuiz(){
   document.getElementById('ring-fill').style.strokeDashoffset=440;
   document.getElementById('name-input').value='';
+  document.getElementById('org-input').value='';
   showScreen('screen-name');
 }
 
@@ -794,6 +797,7 @@ function renderDashboard(){
     if(r.catScores){let mp=Infinity,mc=null;Object.entries(r.catScores).forEach(([c,data])=>{if(data.total>0){const p=data.correct/data.total;if(p<mp){mp=p;mc=c;}}});if(mc)weak=mc+' ('+Math.round(mp*100)+'%)';}
     return '<tr><td style="color:var(--muted);font-family:var(--font-mono);font-size:11px">'+(total-i)+'</td>'
       +'<td style="font-weight:500">'+esc(r.name)+'</td>'
+      +'<td style="color:var(--muted);font-size:12px">'+esc(r.org||'&mdash;')+'</td>'
       +'<td style="font-family:var(--font-mono)">'+r.score+'/'+r.total+' <span style="color:var(--muted)">('+r.pct+'%)</span></td>'
       +'<td><span class="score-badge '+bc+'">'+(r.pct>=75?'PASS':'FAIL')+'</span></td>'
       +'<td style="color:var(--muted);font-size:12px">'+ds+' '+ts+'</td>'
@@ -804,10 +808,10 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function clearResults(){if(confirm('Clear ALL quiz results? This cannot be undone.')){localStorage.removeItem(STORE_KEY);renderDashboard();}}
 function exportCSV(){
   const results=getResults();if(!results.length){alert('No results to export.');return;}
-  const headers=['#','Name','Score','Percentage','Passed','Timestamp',...CATS];
+  const headers=['#','Name','Organisation','Score','Percentage','Passed','Timestamp',...CATS];
   const rows=results.map((r,i)=>{
     const cats=CATS.map(c=>{const d=r.catScores&&r.catScores[c];return d?d.correct+'/'+d.total:'N/A';});
-    return [i+1,'"'+r.name+'"',r.score+'/'+r.total,r.pct+'%',r.passed?'Yes':'No',r.ts,...cats];
+    return [i+1,'"'+r.name+'"','"'+(r.org||'')+'"',r.score+'/'+r.total,r.pct+'%',r.passed?'Yes':'No',r.ts,...cats];
   });
   const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
