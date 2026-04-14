@@ -176,6 +176,33 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   .question-text{font-size:16px}
   .name-card,.admin-login-card{padding:32px 24px}
 }
+
+/* ── CODING EXERCISES ── */
+.code-block{background:#0a0c10;border:1px solid var(--border);border-radius:10px;padding:18px 20px;font-family:var(--font-mono);font-size:12.5px;line-height:1.9;color:#cdd6f4;margin-bottom:20px;overflow-x:auto;white-space:pre}
+.code-block .kw{color:#cba6f7}.code-block .fn{color:#89b4fa}.code-block .str{color:#a6e3a1}.code-block .cm{color:#585b70;font-style:italic}.code-block .num{color:#fab387}
+.code-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.blank-wrap{display:inline-block;vertical-align:middle}
+.blank-input{background:rgba(79,255,176,.08);border:none;border-bottom:2px solid var(--accent);color:var(--accent);font-family:var(--font-mono);font-size:12.5px;padding:0 6px;outline:none;min-width:180px;white-space:normal;transition:border-color .2s}
+.blank-input:focus{border-color:var(--accent2)}
+.blank-input.correct-input{border-color:var(--accent)!important;color:var(--accent)}
+.blank-input.wrong-input{border-color:var(--accent3)!important;color:var(--accent3)}
+.bug-line{display:block;padding:2px 6px;border-radius:4px;cursor:pointer;transition:background .15s;margin:1px 0;white-space:pre}
+.bug-line:hover{background:rgba(255,255,255,.05)}
+.bug-line.selected-bug{background:rgba(255,95,135,.12);outline:1px solid rgba(255,95,135,.4)}
+.bug-line.correct-bug{background:rgba(79,255,176,.12);outline:1px solid rgba(79,255,176,.5)}
+.bug-line.wrong-bug{background:rgba(255,95,135,.2);outline:1px solid var(--accent3)}
+.bug-hint{font-size:12px;color:var(--muted);margin-bottom:12px;font-family:var(--font-mono);font-style:italic}
+.drag-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.drag-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-family:var(--font-mono);font-size:12px;color:#cdd6f4;cursor:grab;display:flex;align-items:center;gap:10px;transition:border-color .2s,background .2s,transform .15s;user-select:none}
+.drag-item:active{cursor:grabbing;transform:scale(1.01)}
+.drag-item.drag-over{border-color:var(--accent2);background:rgba(0,200,255,.07)}
+.drag-item.correct-order{border-color:var(--accent);background:rgba(79,255,176,.07)}
+.drag-item.wrong-order{border-color:var(--accent3);background:rgba(255,95,135,.07)}
+.drag-handle{color:var(--muted);font-size:16px;flex-shrink:0;line-height:1}
+.drag-num{font-size:10px;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:4px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-family:var(--font-mono)}
+.check-btn{background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:8px;padding:9px 22px;font-family:var(--font-mono);font-size:12px;font-weight:700;cursor:pointer;transition:background .2s;margin-bottom:4px;display:block}
+.check-btn:hover{background:rgba(79,255,176,.1)}
+.exercise-badge{display:inline-block;background:rgba(203,166,247,.1);border:1px solid rgba(203,166,247,.3);color:#cba6f7;font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:4px;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -304,26 +331,118 @@ const ALL_QUESTIONS=[
   {category:"Configuration",q:"Which integration provides centralized analytics, reporting, and execution history?",options:["JIRA Integration","Azure DevOps Integration","Katalon TestOps","Selenium Grid"],answer:2,explanation:"Katalon TestOps provides centralized analytics, reporting, and execution history. Configured via Project > Settings > Katalon Platform."},
   {category:"Locators",q:"Which locator type is most stable when a unique HTML attribute is available?",options:["XPath","CSS Selector","Attributes (id, name, aria-*)","Image-based matching"],answer:2,explanation:"Attributes (id, name, aria-*) are the most stable locator type and are preferred when available. Dynamic or auto-generated IDs should be avoided."},
   {category:"Locators",q:"What is the recommended use case for the Smart Locator type?",options:["Lightweight CSS-based selections","Visual element matching as a last resort","Deep nested elements such as Shadow DOM or iFrames","Elements with stable, unique IDs"],answer:2,explanation:"Smart Locator is designed for deep nested elements such as Shadow DOM or iFrames. It is slow but reliable, and recordable but not editable."},
-  {category:"Locators",q:"What is the recommended Self-Healing locator fallback order?",options:["CSS > XPath > Image > Attributes > Smart Locator","XPath > Smart Locator > Attributes > CSS > Image","Attributes > XPath > CSS > Image > Smart Locator","Smart Locator > XPath > CSS > Attributes > Image"],answer:1,explanation:"The recommended fallback order is XPath → Smart Locator → Attributes → CSS → Image, set in Project > Settings > Self-Healing > Web UI."},
+  {category:"Locators",q:"What is the recommended Self-Healing locator fallback order?",options:["CSS > XPath > Image > Attributes > Smart Locator","XPath > Smart Locator > Attributes > CSS > Image","Attributes > XPath > CSS > Image > Smart Locator","Smart Locator > XPath > CSS > Attributes > Image"],answer:1,explanation:"The recommended fallback order is XPath > Smart Locator > Attributes > CSS > Image, set in Project > Settings > Self-Healing > Web UI."},
   {category:"Locators",q:"Which custom HTML attribute do the training materials recommend for robust element targeting?",options:["id","name","data-test-id","aria-label"],answer:2,explanation:"The training recommends using data-test-id for robust targeting, coordinating with developers to add it to application elements."},
   {category:"Test Creation",q:"After using the Web Recorder, where should captured objects initially be reviewed?",options:["The Object Repository root folder","A temporary (Temp) folder","The Test Data folder","The Keywords folder"],answer:1,explanation:"After recording, objects land in a Temp folder. Best practice is to review, rename, and then move them to appropriate repository folders."},
   {category:"Test Creation",q:"What is the primary benefit of Katalon's Studio Assist?",options:["Automatically runs regression suites on a schedule","Generates test steps from natural language inputs or requirements","Connects directly to Jira to import test cases","Converts recorded tests to Groovy scripts"],answer:1,explanation:"Studio Assist is an AI-powered assistant that generates test cases from natural language inputs, requirements, or test ideas, accelerating test authoring."},
   {category:"Test Creation",q:"In Script Mode, how do you call a built-in keyword to click a web element?",options:["Keywords.click()","WebUI.click()","Katalon.clickElement()","Test.perform('click')"],answer:1,explanation:"Built-in web keywords use the WebUI prefix in Script Mode, e.g., WebUI.click(). Custom keywords use CustomKeywords.'path.to.method'()."},
   {category:"Test Creation",q:"Which of the following is a valid source for importing API test objects into Katalon?",options:["A Postman collection","A JUnit XML file","A Maven POM file","A Selenium IDE export"],answer:0,explanation:"Katalon supports importing from Postman collections, as well as Swagger/OpenAPI (YAML/JSON), WADL, WSDL, and SoapUI."},
-  {category:"Test Creation",q:"Which API test creation mode lets you type intent in plain English to auto-generate code?",options:["Keyword Mode","Import Mode with AI","Script Mode with StudioAssist","Object Spy Mode"],answer:2,explanation:"Script Mode with StudioAssist lets you describe intent in plain English (e.g., 'Call login API and verify status 200') and auto-generates the corresponding test code."},
-  {category:"Debugging",q:"In which view is breakpoint-based debugging available in Katalon Studio?",options:["Manual Mode","Script Mode","Both Manual and Script Mode","Debug Panel only"],answer:1,explanation:"Breakpoints are only available in Script Mode. Click in the gutter next to a code line to set one, then launch debug mode using the debug icon (🐞)."},
+  {category:"Test Creation",q:"Which API test creation mode lets you type intent in plain English to auto-generate code?",options:["Keyword Mode","Import Mode with AI","Script Mode with StudioAssist","Object Spy Mode"],answer:2,explanation:"Script Mode with StudioAssist lets you describe intent in plain English and auto-generates the corresponding test code."},
+  {category:"Debugging",q:"In which view is breakpoint-based debugging available in Katalon Studio?",options:["Manual Mode","Script Mode","Both Manual and Script Mode","Debug Panel only"],answer:1,explanation:"Breakpoints are only available in Script Mode. Click in the gutter next to a code line to set one, then launch debug mode using the debug icon."},
   {category:"Debugging",q:"Which debug control lets you step into the logic of a called keyword?",options:["Step Over","Step Out","Step Into","Resume"],answer:2,explanation:"Step Into dives into called keywords. Step Over moves to the next line, Step Out exits the current keyword, and Resume continues execution."},
   {category:"Debugging",q:"How does Object Spy differ from Self-Healing for fixing broken locators?",options:["Object Spy is automated; Self-Healing is manual","Object Spy is manual locate-and-fix; Self-Healing is smart auto-correction","Object Spy only works for API; Self-Healing is web-only","They are identical features with different names"],answer:1,explanation:"Object Spy is a manual tool for highlighting and capturing locators, while Self-Healing automatically detects broken locators at runtime and suggests corrections."},
-  {category:"Test Data",q:"What is the recommended maximum dataset size for Internal Data files?",options:["100–200 rows","50–100 rows","5–20 rows","No limit recommended"],answer:2,explanation:"Internal Data should be kept to 5–20 rows for maintainability. Larger regression datasets should use Excel or CSV files instead."},
+  {category:"Test Data",q:"What is the recommended maximum dataset size for Internal Data files?",options:["100-200 rows","50-100 rows","5-20 rows","No limit recommended"],answer:2,explanation:"Internal Data should be kept to 5-20 rows for maintainability. Larger regression datasets should use Excel or CSV files instead."},
   {category:"Test Data",q:"Where should Excel/CSV test data files be stored within a Katalon project?",options:["Root of the project directory","Include > Resources > Test Data","Test Cases > Data","Object Repository > Data"],answer:1,explanation:"CSV and Excel files should be placed under Include > Resources > Test Data to keep data organised and portable, avoiding absolute file paths."},
-  {category:"Test Data",q:"Which data binding strategy executes every data row exactly once?",options:["One-to-One","Range","All Combinations","All"],answer:3,explanation:"The 'All' strategy executes each row once. 'All Combinations' creates a full cross-product matrix, 'One-to-One' maps Row N to Row N, and 'Range' runs specific rows."},
+  {category:"Test Data",q:"Which data binding strategy executes every data row exactly once?",options:["One-to-One","Range","All Combinations","All"],answer:3,explanation:"The All strategy executes each row once. All Combinations creates a full cross-product matrix, One-to-One maps Row N to Row N, and Range runs specific rows."},
   {category:"Test Data",q:"What is the main purpose of Execution Profiles in Katalon Studio?",options:["Recording browser interactions automatically","Storing Global Variables for different environments (Dev, QA, UAT, Prod)","Packaging test cases for deployment","Configuring locator strategies per environment"],answer:1,explanation:"Profiles store reusable Global Variables for different environments, decoupling test logic from environment-specific data and enabling scalable cross-environment execution."},
-  {category:"Test Data",q:"What syntax is used to reference a Global Variable inside a test case?",options:["GlobalVariable.VARIABLE_NAME","${GlobalVariable.VARIABLE_NAME}","@GlobalVariable.VARIABLE_NAME","Profiles.get('VARIABLE_NAME')"],answer:1,explanation:"Global Variables are referenced using ${GlobalVariable.VARIABLE_NAME} within Katalon test cases."},
-  {category:"Test Execution",q:"What key capability do Test Suite Collections add over a single Test Suite?",options:["Support for data binding","Parallel execution and cross-browser/multi-profile testing","CLI execution support","API test support"],answer:1,explanation:"Test Suite Collections group multiple Test Suites and enable parallel execution, cross-browser testing, and multi-profile execution — not available in a single Test Suite."},
+  {category:"Test Data",q:"What syntax is used to reference a Global Variable inside a test case?",options:["GlobalVariable.VARIABLE_NAME","${GlobalVariable.VARIABLE_NAME}","@GlobalVariable.VARIABLE_NAME","Profiles.get('VARIABLE_NAME')"],answer:1,explanation:"Global Variables are referenced using the dollar-brace syntax GlobalVariable.VARIABLE_NAME within Katalon test cases."},
+  {category:"Test Execution",q:"What key capability do Test Suite Collections add over a single Test Suite?",options:["Support for data binding","Parallel execution and cross-browser/multi-profile testing","CLI execution support","API test support"],answer:1,explanation:"Test Suite Collections group multiple Test Suites and enable parallel execution, cross-browser testing, and multi-profile execution - not available in a single Test Suite."},
   {category:"Test Execution",q:"Where do you configure browser-specific capabilities such as args, prefs, and WebDriver settings?",options:["Test Suite > Execution Settings","Project > Settings > Desired Capabilities > Web UI > [Browser Type]","Tools > WebDriver > Browser Config","Run > Advanced Options > Capabilities"],answer:1,explanation:"Browser capabilities (args, prefs, top-level capabilities) are configured via Project > Settings > Desired Capabilities > Web UI > [Browser Type]."},
   {category:"Test Execution",q:"Which browser argument runs the browser in headless mode for faster execution?",options:["--no-gui","--disable-display","--headless","--silent"],answer:2,explanation:"The --headless argument runs the browser without a visible UI for faster execution. It is often combined with --disable-gpu for compatibility."},
   {category:"Test Execution",q:"What is required to activate the Katalon Runtime Engine when generating a CLI command?",options:["A valid Katalon license file (.lic)","A Katalon API key","A Jenkins integration token","A TestOps project ID"],answer:1,explanation:"A Katalon API key must be entered in the Command Builder. It is required to activate the Runtime Engine for CLI/console execution."},
-  {category:"Test Execution",q:"In the Linux cron expression '0 2 * * *', when does the job run?",options:["Every 2 minutes","At 2:00 AM every day","At 2:00 PM on weekdays","Every hour at minute 2"],answer:1,explanation:"'0 2 * * *' means: minute 0, hour 2, any day, any month, any weekday — i.e., 2:00 AM every day."}
+  {category:"Test Execution",q:"In the Linux cron expression 0 2 * * *, when does the job run?",options:["Every 2 minutes","At 2:00 AM every day","At 2:00 PM on weekdays","Every hour at minute 2"],answer:1,explanation:"0 2 * * * means: minute 0, hour 2, any day, any month, any weekday - 2:00 AM every day."},
+
+  // ── CODING EXERCISES ────────────────────────────────────────────────
+  {type:"fill",category:"Test Creation",
+   q:"Complete the Script Mode call to click the element stored at <code>Page_Login/btn_login</code>:",
+   code:'WebUI.<span id="b1">______</span>(findTestObject(<span class="str">\'Page_Login/btn_login\'</span>))',
+   blanks:[{id:"b1",answer:"click",alt:[],placeholder:"keyword"}],
+   explanation:"WebUI.click() is the correct built-in keyword. It accepts a TestObject referenced via findTestObject() with the object repository path."},
+
+  {type:"fill",category:"Test Data",
+   q:"Complete the line that reads the <code>APP_URL</code> Global Variable from an Execution Profile in Script Mode:",
+   code:'WebUI.navigateToUrl(<span id="b2">__________________</span>)',
+   blanks:[{id:"b2",answer:"GlobalVariable.APP_URL",alt:[],placeholder:"GlobalVariable.???"}],
+   explanation:"In Groovy Script Mode, Global Variables are accessed directly as GlobalVariable.VARIABLE_NAME - no quotes or braces needed."},
+
+  {type:"fill",category:"Test Creation",
+   q:"Complete the keyword that sends an API request and captures the response:",
+   code:'<span class="kw">def</span> response = WS.<span id="b3">____________</span>(findTestObject(<span class="str">\'API/POST_Login\'</span>))',
+   blanks:[{id:"b3",answer:"sendRequest",alt:[],placeholder:"keyword"}],
+   explanation:"WS.sendRequest() sends an HTTP request using a RequestObject from the Object Repository and returns a ResponseObject for verification."},
+
+  {type:"fill",category:"Debugging",
+   q:"Complete the assertion that verifies the API response has HTTP status code 200:",
+   code:'WS.<span id="b4">_______________________</span>(response, <span class="num">200</span>)',
+   blanks:[{id:"b4",answer:"verifyResponseStatusCode",alt:[],placeholder:"keyword"}],
+   explanation:"WS.verifyResponseStatusCode() checks that the HTTP status code matches the expected value and fails the test step if they differ."},
+
+  {type:"fill",category:"Test Creation",
+   q:"Complete the custom keyword call using the full path <code>common.utils.LoginHelper.loginAs</code>:",
+   code:"CustomKeywords.<span id=\"b5\">_______________________________</span>(<span class=\"str\">'admin'</span>, <span class=\"str\">'pass123'</span>)",
+   blanks:[{id:"b5",answer:"'common.utils.LoginHelper.loginAs'",alt:[],placeholder:"'package.Class.method'"}],
+   explanation:"Custom keywords are called as CustomKeywords.'full.package.ClassName.methodName'(). The full dotted path must be wrapped in single quotes."},
+
+  {type:"bug",category:"Debugging",
+   q:"This login script has a bug that causes a runtime error. Click the line containing the mistake:",
+   hint:"Hint: Groovy method names are case-sensitive.",
+   code:[
+    {id:"g1",line:"WebUI.openBrowser('')",bug:false},
+    {id:"g2",line:"WebUI.navigateToUrl(<span class=\"str\">'https://app.example.com'</span>)",bug:false},
+    {id:"g3",line:"WebUI.setText(findTestObject(<span class=\"str\">'Page_Login/txt_username'</span>), <span class=\"str\">'admin'</span>)",bug:false},
+    {id:"g4",line:"WebUI.SetText(findTestObject(<span class=\"str\">'Page_Login/txt_password'</span>), <span class=\"str\">'pass123'</span>)",bug:true},
+    {id:"g5",line:"WebUI.click(findTestObject(<span class=\"str\">'Page_Login/btn_login'</span>))",bug:false}
+   ],
+   explanation:"Line 4 uses WebUI.SetText() with a capital S. Groovy is case-sensitive, so this throws a MissingMethodException at runtime. The correct call is WebUI.setText() with a lowercase s."},
+
+  {type:"bug",category:"Test Data",
+   q:"This data-driven test silently returns null for one field. Click the problematic line:",
+   hint:"Hint: CSV column header names are case-sensitive.",
+   code:[
+    {id:"h1",line:"<span class=\"kw\">def</span> username = data.getValue(<span class=\"str\">'username'</span>, index)",bug:false},
+    {id:"h2",line:"<span class=\"kw\">def</span> password = data.getValue(<span class=\"str\">'Password'</span>, index)",bug:true},
+    {id:"h3",line:"WebUI.setText(findTestObject(<span class=\"str\">'txt_username'</span>), username)",bug:false},
+    {id:"h4",line:"WebUI.setText(findTestObject(<span class=\"str\">'txt_password'</span>), password)",bug:false}
+   ],
+   explanation:"Line 2 uses 'Password' with a capital P, but if the CSV column header is 'password' (lowercase), getValue() returns null - causing the password field to be empty with no error thrown."},
+
+  {type:"bug",category:"Test Execution",
+   q:"This CLI command has one incorrect flag. Click the line containing the error:",
+   hint:"Hint: Check the flag used to specify the test suite path.",
+   code:[
+    {id:"k1",line:"katalon \\",bug:false},
+    {id:"k2",line:"  -noSplash -runMode=console \\",bug:false},
+    {id:"k3",line:"  -projectPath=<span class=\"str\">\"/projects/MyApp/MyApp.prj\"</span> \\",bug:false},
+    {id:"k4",line:"  -suitePath=<span class=\"str\">\"Test Suites/LoginTests\"</span> \\",bug:true},
+    {id:"k5",line:"  -executionProfile=<span class=\"str\">\"QA\"</span> -browserType=<span class=\"str\">\"Chrome\"</span>",bug:false}
+   ],
+   explanation:"Line 4 uses -suitePath which is not a valid Katalon CLI flag. The correct flag is -testSuitePath. Using an unrecognised flag causes the command to fail or run with no suite specified."},
+
+  {type:"order",category:"Test Creation",
+   q:"Drag to arrange these steps in the correct order for a Web Recorder session:",
+   items:[
+    {id:"r1",text:"Configure default locator strategy in Project Settings"},
+    {id:"r2",text:"Launch Record Web from toolbar and enter the target URL"},
+    {id:"r3",text:"Perform actions manually - Katalon records each step"},
+    {id:"r4",text:"Add synchronization and verification points during recording"},
+    {id:"r5",text:"Choose object merging strategy and save the Test Case"},
+    {id:"r6",text:"Review objects in Temp folder and move to repository"}
+   ],
+   correctOrder:["r1","r2","r3","r4","r5","r6"],
+   explanation:"Correct sequence: configure locators first, launch recorder, perform actions, add waits and assertions, save with correct merge strategy, then review and organise captured objects."},
+
+  {type:"order",category:"Debugging",
+   q:"Drag to arrange the correct sequence for debugging a failing test in Katalon Studio:",
+   items:[
+    {id:"p1",text:"Switch the test case to Script Mode"},
+    {id:"p2",text:"Set breakpoints by clicking in the gutter next to suspect lines"},
+    {id:"p3",text:"Launch debug mode using the bug icon in the toolbar"},
+    {id:"p4",text:"Step through execution using Step Over or Step Into"},
+    {id:"p5",text:"Inspect values in the Watch Variables panel"},
+    {id:"p6",text:"Apply the fix and re-run to confirm resolution"}
+   ],
+   correctOrder:["p1","p2","p3","p4","p5","p6"],
+   explanation:"Debugging flow: Script Mode is required first, then set breakpoints, start debug mode, step through code, monitor variable state, then fix and verify."}
 ];
 
 const PASS_MARK=0.75;
@@ -349,47 +468,109 @@ function startQuiz(){
   if(!v){document.getElementById('name-error').classList.add('show');return;}
   document.getElementById('name-error').classList.remove('show');
   traineeName=v;
-  document.getElementById('quiz-greeting').textContent=`Good luck, ${v.split(' ')[0]}!`;
+  document.getElementById('quiz-greeting').textContent='Good luck, '+v.split(' ')[0]+'!';
   initQuiz();
   showScreen('screen-quiz');
 }
 
-// ── QUIZ ───────────────────────────────────────────────────────────────
+// ── QUIZ INIT ──────────────────────────────────────────────────────────
 function initQuiz(){
   curQ=0;score=0;answered=false;userAnswers=[];streak=0;catScores={};
   CATS.forEach(c=>{catScores[c]={correct:0,total:0}});
   questions=[...ALL_QUESTIONS].sort(()=>Math.random()-.5);
-  questions.forEach(q=>{catScores[q.category].total++});
+  questions.forEach(q=>{if(catScores[q.category])catScores[q.category].total++});
   renderQuestion();
 }
 
+// ── RENDER ─────────────────────────────────────────────────────────────
 function renderQuestion(){
   const q=questions[curQ];
   answered=false;
-  document.getElementById('q-category').textContent=q.category;
-  document.getElementById('q-num').textContent=`Question ${curQ+1} of ${questions.length}`;
-  document.getElementById('q-text').textContent=q.q;
+
+  // category / exercise badge
+  const oldCat=document.getElementById('q-category');
+  const labels={fill:'Fill in the Blank',bug:'Spot the Bug',order:'Order the Steps'};
+  if(q.type){
+    oldCat.className='exercise-badge';
+    oldCat.innerHTML='&#x2328; '+labels[q.type]+' &mdash; '+q.category;
+  }else{
+    oldCat.className='category-pill';
+    oldCat.textContent=q.category;
+  }
+
+  document.getElementById('q-num').textContent='Question '+(curQ+1)+' of '+questions.length;
+  document.getElementById('q-text').innerHTML=q.q;
+
   const optEl=document.getElementById('options');
-  optEl.innerHTML='';
-  ['A','B','C','D'].forEach((L,i)=>{
-    const b=document.createElement('button');
-    b.className='option';
-    b.innerHTML=`<span class="opt-letter">${L}</span><span>${q.options[i]}</span>`;
-    b.onclick=()=>selectAnswer(i);
-    optEl.appendChild(b);
-  });
   const fb=document.getElementById('feedback');
   fb.className='feedback';fb.innerHTML='';
   document.getElementById('next-btn').className='btn';
+
+  if(!q.type){
+    // Standard MCQ
+    optEl.innerHTML='';
+    ['A','B','C','D'].forEach((L,i)=>{
+      const b=document.createElement('button');
+      b.className='option';
+      b.innerHTML='<span class="opt-letter">'+L+'</span><span>'+q.options[i]+'</span>';
+      b.onclick=()=>selectAnswer(i);
+      optEl.appendChild(b);
+    });
+  } else if(q.type==='fill'){
+    optEl.innerHTML='<div class="code-label">Complete the code</div>'
+      +'<div class="code-block" id="code-display">'+q.code+'</div>'
+      +'<button class="check-btn" id="fill-check-btn" onclick="checkFill()">Check Answer</button>';
+    q.blanks.forEach(bl=>{
+      const span=document.getElementById(bl.id);
+      if(span){
+        const inp=document.createElement('input');
+        inp.className='blank-input';
+        inp.setAttribute('data-answer',bl.answer);
+        inp.setAttribute('data-alt',(bl.alt||[]).join('||'));
+        inp.placeholder=bl.placeholder||'...';
+        inp.size=Math.max((bl.placeholder||'').length+2,14);
+        inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkFill();});
+        span.replaceWith(inp);
+      }
+    });
+    // Focus first input
+    setTimeout(()=>{const i=document.querySelector('.blank-input');if(i)i.focus();},50);
+  } else if(q.type==='bug'){
+    let html='<div class="bug-hint">'+q.hint+'</div>'
+      +'<div class="code-label">Click the buggy line</div>'
+      +'<div class="code-block" id="bug-code">';
+    q.code.forEach(l=>{
+      html+='<span class="bug-line" id="'+l.id+'" data-bug="'+l.bug+'" onclick="selectBug(\''+l.id+'\')">'+l.line+'</span>';
+    });
+    html+='</div>';
+    optEl.innerHTML=html;
+  } else if(q.type==='order'){
+    const shuffled=[...q.items].sort(()=>Math.random()-.5);
+    let html='<div class="code-label">Drag to put in correct order</div>'
+      +'<div class="drag-list" id="drag-list">';
+    shuffled.forEach((item,i)=>{
+      html+='<div class="drag-item" id="'+item.id+'" draggable="true" data-id="'+item.id+'">'
+        +'<span class="drag-handle">&#x2807;</span>'
+        +'<span class="drag-num">'+(i+1)+'</span>'
+        +'<span>'+item.text+'</span>'
+        +'</div>';
+    });
+    html+='</div><button class="check-btn" onclick="checkOrder()">Check Order</button>';
+    optEl.innerHTML=html;
+    initDrag();
+  }
+
   const pct=(curQ/questions.length)*100;
   document.getElementById('progress-fill').style.width=pct+'%';
-  document.getElementById('progress-label').textContent=`${curQ} / ${questions.length}`;
+  document.getElementById('progress-label').textContent=curQ+' / '+questions.length;
   const sb=document.getElementById('streak-banner');
-  if(streak>=3){sb.textContent=`🔥 ${streak} correct in a row!`;sb.className='streak show';}else sb.className='streak';
+  if(streak>=3){sb.textContent='🔥 '+streak+' correct in a row!';sb.className='streak show';}
+  else sb.className='streak';
   const card=document.getElementById('question-card');
   card.style.animation='none';card.offsetHeight;card.style.animation='slideUp .4s ease both';
 }
 
+// ── MCQ ────────────────────────────────────────────────────────────────
 function selectAnswer(idx){
   if(answered)return;
   answered=true;
@@ -401,59 +582,184 @@ function selectAnswer(idx){
     if(i===q.answer)o.classList.add('correct');
     if(i===idx&&!ok)o.classList.add('wrong');
   });
+  recordResult(ok,q.options[idx],q.options[q.answer]);
+}
+
+function recordResult(ok,yours,correct){
+  const q=questions[curQ];
   const fb=document.getElementById('feedback');
   if(ok){
-    score++;streak++;catScores[q.category].correct++;
+    score++;streak++;
+    if(catScores[q.category])catScores[q.category].correct++;
     fb.className='feedback correct show';
-    fb.innerHTML=`<strong>✓ Correct!</strong>${q.explanation}`;
+    fb.innerHTML='<strong>&#10003; Correct!</strong>'+q.explanation;
   }else{
     streak=0;
     fb.className='feedback wrong show';
-    fb.innerHTML=`<strong>✗ Not quite.</strong>${q.explanation}`;
+    fb.innerHTML='<strong>&#10007; Not quite.</strong>'+q.explanation;
   }
-  userAnswers.push({q:q.q,category:q.category,yours:q.options[idx],correct:q.options[q.answer],ok});
+  userAnswers.push({q:q.q,category:q.category,yours:String(yours),correct:String(correct),ok,type:q.type||'mcq'});
   const nb=document.getElementById('next-btn');
-  nb.textContent=curQ<questions.length-1?'Next →':'See Results';
+  nb.textContent=curQ<questions.length-1?'Next \u2192':'See Results';
   nb.className='btn show';
   const sb=document.getElementById('streak-banner');
-  if(streak>=3){sb.textContent=`🔥 ${streak} correct in a row!`;sb.className='streak show';}
+  if(streak>=3){sb.textContent='🔥 '+streak+' correct in a row!';sb.className='streak show';}
 }
 
+// ── FILL-IN-BLANK ──────────────────────────────────────────────────────
+function checkFill(){
+  if(answered)return;
+  answered=true;
+  const inputs=document.querySelectorAll('.blank-input');
+  let allOk=true;
+  inputs.forEach(inp=>{
+    const got=inp.value.trim();
+    const expected=inp.getAttribute('data-answer');
+    const alts=(inp.getAttribute('data-alt')||'').split('||').map(a=>a.trim()).filter(Boolean);
+    const ok=got===expected||alts.includes(got);
+    inp.classList.add(ok?'correct-input':'wrong-input');
+    inp.disabled=true;
+    if(!ok){allOk=false;inp.value=expected;}
+  });
+  const btn=document.getElementById('fill-check-btn');
+  if(btn)btn.disabled=true;
+  recordResult(allOk,allOk?'Correct':'Incorrect',questions[curQ].blanks.map(b=>b.answer).join(', '));
+}
+
+// ── SPOT THE BUG ───────────────────────────────────────────────────────
+function selectBug(id){
+  if(answered)return;
+  answered=true;
+  const q=questions[curQ];
+  const correctLine=q.code.find(l=>l.bug);
+  const ok=id===correctLine.id;
+  document.querySelectorAll('.bug-line').forEach(l=>{
+    l.style.pointerEvents='none';
+    if(l.id===correctLine.id)l.classList.add('correct-bug');
+    if(l.id===id&&!ok)l.classList.add('wrong-bug');
+  });
+  recordResult(ok,'Line '+id,'Line '+correctLine.id);
+}
+
+// ── DRAG TO ORDER ──────────────────────────────────────────────────────
+let dragSrc=null;
+function initDrag(){
+  const list=document.getElementById('drag-list');
+  if(!list)return;
+  list.addEventListener('dragstart',e=>{
+    dragSrc=e.target.closest('.drag-item');
+    if(dragSrc)e.dataTransfer.effectAllowed='move';
+  });
+  list.addEventListener('dragover',e=>{
+    e.preventDefault();
+    const t=e.target.closest('.drag-item');
+    if(t&&t!==dragSrc)t.classList.add('drag-over');
+  });
+  list.addEventListener('dragleave',e=>{
+    const t=e.target.closest('.drag-item');
+    if(t)t.classList.remove('drag-over');
+  });
+  list.addEventListener('drop',e=>{
+    e.preventDefault();
+    const t=e.target.closest('.drag-item');
+    if(t&&t!==dragSrc){
+      t.classList.remove('drag-over');
+      const items=[...list.querySelectorAll('.drag-item')];
+      if(items.indexOf(dragSrc)<items.indexOf(t))t.after(dragSrc);else t.before(dragSrc);
+      updateDragNums(list);
+    }
+  });
+  // touch
+  let ti=null,tc=null;
+  list.addEventListener('touchstart',e=>{
+    ti=e.target.closest('.drag-item');
+    if(!ti)return;
+    tc=ti.cloneNode(true);
+    tc.style.cssText='position:fixed;opacity:.8;pointer-events:none;z-index:999;width:'+ti.offsetWidth+'px;left:0;top:0;';
+    document.body.appendChild(tc);
+  },{passive:true});
+  list.addEventListener('touchmove',e=>{
+    if(!ti||!tc)return;e.preventDefault();
+    const t=e.touches[0];
+    tc.style.left=(t.clientX-ti.offsetWidth/2)+'px';
+    tc.style.top=(t.clientY-24)+'px';
+    const el=document.elementFromPoint(t.clientX,t.clientY);
+    const ov=el&&el.closest('.drag-item');
+    list.querySelectorAll('.drag-item').forEach(i=>i.classList.remove('drag-over'));
+    if(ov&&ov!==ti)ov.classList.add('drag-over');
+  },{passive:false});
+  list.addEventListener('touchend',e=>{
+    if(!ti||!tc)return;tc.remove();tc=null;
+    const t=e.changedTouches[0];
+    const el=document.elementFromPoint(t.clientX,t.clientY);
+    const tgt=el&&el.closest('.drag-item');
+    list.querySelectorAll('.drag-item').forEach(i=>i.classList.remove('drag-over'));
+    if(tgt&&tgt!==ti){
+      const items=[...list.querySelectorAll('.drag-item')];
+      if(items.indexOf(ti)<items.indexOf(tgt))tgt.after(ti);else tgt.before(ti);
+      updateDragNums(list);
+    }
+    ti=null;
+  },{passive:true});
+}
+function updateDragNums(list){
+  [...list.querySelectorAll('.drag-item')].forEach((item,i)=>{
+    item.querySelector('.drag-num').textContent=i+1;
+  });
+}
+function checkOrder(){
+  if(answered)return;
+  answered=true;
+  const q=questions[curQ];
+  const list=document.getElementById('drag-list');
+  const current=[...list.querySelectorAll('.drag-item')].map(i=>i.getAttribute('data-id'));
+  const ok=JSON.stringify(current)===JSON.stringify(q.correctOrder);
+  current.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.add(id===q.correctOrder[i]?'correct-order':'wrong-order');
+  });
+  const btn=list.nextElementSibling;
+  if(btn&&btn.classList.contains('check-btn'))btn.disabled=true;
+  recordResult(ok,'Submitted order',ok?'Correct order!':q.correctOrder.map((id,i)=>{
+    const item=q.items.find(x=>x.id===id);
+    return (i+1)+'. '+(item?item.text:'');
+  }).join(' | '));
+}
+
+// ── NEXT / SCORE ───────────────────────────────────────────────────────
 function nextQuestion(){
   curQ++;
   if(curQ>=questions.length)showScore();
   else renderQuestion();
 }
 
-// ── SCORE ──────────────────────────────────────────────────────────────
 function showScore(){
   showScreen('screen-score');
   const pct=score/questions.length;
   document.getElementById('score-num').textContent=score;
-  document.getElementById('score-denom').textContent=`/ ${questions.length}`;
+  document.getElementById('score-denom').textContent='/ '+questions.length;
   let title,sub;
   if(pct>=.9){title='🏆 Outstanding!';sub='Excellent mastery of Katalon Studio.';}
   else if(pct>=.75){title='✅ Well Done!';sub='Strong understanding with a few areas to review.';}
-  else if(pct>=.6){title='📘 Good Effort';sub='Solid foundation — revisit the sections below.';}
+  else if(pct>=.6){title='📘 Good Effort';sub='Solid foundation - revisit the sections below.';}
   else{title='🔄 Keep Practicing';sub='Review the training material and retake the quiz.';}
   document.getElementById('score-title').textContent=title;
-  document.getElementById('score-sub').textContent=sub+` You scored ${score} out of ${questions.length} (${Math.round(pct*100)}%).`;
+  document.getElementById('score-sub').textContent=sub+' You scored '+score+' out of '+questions.length+' ('+Math.round(pct*100)+'%).';
   setTimeout(()=>{document.getElementById('ring-fill').style.strokeDashoffset=440-(pct*440);},100);
-  const catEl=document.getElementById('cat-stats');
-  catEl.innerHTML='';
+  const catEl=document.getElementById('cat-stats');catEl.innerHTML='';
   CATS.forEach(c=>{
     const d=catScores[c];if(!d||d.total===0)return;
     const p=Math.round((d.correct/d.total)*100);
-    catEl.innerHTML+=`<div class="cat-stat"><div class="cat-stat-label">${c}</div><div class="cat-stat-score">${d.correct}/${d.total}</div><div class="cat-stat-bar"><div class="cat-stat-fill" style="width:${p}%"></div></div></div>`;
+    catEl.innerHTML+='<div class="cat-stat"><div class="cat-stat-label">'+c+'</div><div class="cat-stat-score">'+d.correct+'/'+d.total+'</div><div class="cat-stat-bar"><div class="cat-stat-fill" style="width:'+p+'%"></div></div></div>';
   });
-  document.getElementById('breakdown-rows').innerHTML=userAnswers.map(a=>`
-    <div class="breakdown-row">
-      <div class="breakdown-icon">${a.ok?'✅':'❌'}</div>
-      <div>
-        <div class="breakdown-q">${a.q}</div>
-        ${!a.ok?`<div class="breakdown-a w">Your answer: ${a.yours}</div><div class="breakdown-a c">Correct: ${a.correct}</div>`:`<div class="breakdown-a c">${a.correct}</div>`}
-      </div>
-    </div>`).join('');
+  document.getElementById('breakdown-rows').innerHTML=userAnswers.map(a=>{
+    const icon=a.ok?'✅':'❌';
+    return '<div class="breakdown-row"><div class="breakdown-icon">'+icon+'</div><div>'
+      +'<div class="breakdown-q">'+a.q+'</div>'
+      +(!a.ok?'<div class="breakdown-a w">Yours: '+a.yours+'</div><div class="breakdown-a c">Correct: '+a.correct+'</div>'
+             :'<div class="breakdown-a c">'+a.correct+'</div>')
+      +'</div></div>';
+  }).join('');
   saveResult({name:traineeName,score,total:questions.length,pct:Math.round(pct*100),passed:pct>=PASS_MARK,catScores:JSON.parse(JSON.stringify(catScores)),ts:new Date().toISOString()});
 }
 
@@ -474,97 +780,69 @@ function showAdminLogin(){
   showScreen('screen-admin-login');
 }
 document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin()});
-
 function adminLogin(){
   if(document.getElementById('pw-input').value===ADMIN_PW){
     document.getElementById('pw-error').classList.remove('show');
-    renderDashboard();
-    showScreen('screen-admin');
+    renderDashboard();showScreen('screen-admin');
   }else{
     document.getElementById('pw-error').classList.add('show');
     document.getElementById('pw-input').value='';
   }
 }
-
 function renderDashboard(){
   const results=getResults();
   const total=results.length;
   const passed=results.filter(r=>r.passed).length;
   const avg=total?Math.round(results.reduce((s,r)=>s+r.pct,0)/total):0;
   const high=total?Math.max(...results.map(r=>r.pct)):0;
-
-  document.getElementById('kpi-row').innerHTML=`
-    <div class="kpi blue"><div class="kpi-label">Total Attempts</div><div class="kpi-value">${total}</div><div class="kpi-sub">all time</div></div>
-    <div class="kpi green"><div class="kpi-label">Pass Rate</div><div class="kpi-value">${total?Math.round((passed/total)*100):0}%</div><div class="kpi-sub">${passed} of ${total} passed</div></div>
-    <div class="kpi yellow"><div class="kpi-label">Avg Score</div><div class="kpi-value">${avg}%</div><div class="kpi-sub">pass mark: 75%</div></div>
-    <div class="kpi ${high>=75?'green':'red'}"><div class="kpi-label">Top Score</div><div class="kpi-value">${high}%</div><div class="kpi-sub">best attempt</div></div>`;
-
+  document.getElementById('kpi-row').innerHTML=
+    '<div class="kpi blue"><div class="kpi-label">Total Attempts</div><div class="kpi-value">'+total+'</div><div class="kpi-sub">all time</div></div>'+
+    '<div class="kpi green"><div class="kpi-label">Pass Rate</div><div class="kpi-value">'+(total?Math.round((passed/total)*100):0)+'%</div><div class="kpi-sub">'+passed+' of '+total+' passed</div></div>'+
+    '<div class="kpi yellow"><div class="kpi-label">Avg Score</div><div class="kpi-value">'+avg+'%</div><div class="kpi-sub">pass mark: 75%</div></div>'+
+    '<div class="kpi '+(high>=75?'green':'red')+'"><div class="kpi-label">Top Score</div><div class="kpi-value">'+high+'%</div><div class="kpi-sub">best attempt</div></div>';
   const catGrid=document.getElementById('cat-perf-grid');
-  if(!total){
-    catGrid.innerHTML='<p style="color:var(--muted);font-size:13px;grid-column:1/-1;padding:8px 0">No results yet.</p>';
-  }else{
-    const agg={};
-    CATS.forEach(c=>{agg[c]={correct:0,total:0}});
-    results.forEach(r=>{
-      if(r.catScores)Object.entries(r.catScores).forEach(([c,d])=>{if(agg[c]){agg[c].correct+=d.correct;agg[c].total+=d.total;}});
-    });
+  if(!total){catGrid.innerHTML='<p style="color:var(--muted);font-size:13px;grid-column:1/-1;padding:8px 0">No results yet.</p>';}
+  else{
+    const agg={};CATS.forEach(c=>{agg[c]={correct:0,total:0}});
+    results.forEach(r=>{if(r.catScores)Object.entries(r.catScores).forEach(([c,d])=>{if(agg[c]){agg[c].correct+=d.correct;agg[c].total+=d.total;}});});
     catGrid.innerHTML=CATS.map(c=>{
       const d=agg[c];const p=d.total?Math.round((d.correct/d.total)*100):0;
       const col=p>=75?'#4fffb0':p>=50?'#ffd166':'#ff5f87';
-      return `<div class="cat-perf"><div class="cat-perf-top"><div class="cat-perf-name">${c}</div><div class="cat-perf-pct" style="color:${col}">${p}%</div></div><div class="cat-perf-bar"><div class="cat-perf-fill" style="width:${p}%;background:${col}"></div></div></div>`;
+      return '<div class="cat-perf"><div class="cat-perf-top"><div class="cat-perf-name">'+c+'</div><div class="cat-perf-pct" style="color:'+col+'">'+p+'%</div></div><div class="cat-perf-bar"><div class="cat-perf-fill" style="width:'+p+'%;background:'+col+'"></div></div></div>';
     }).join('');
   }
-
   const tbody=document.getElementById('results-tbody');
   if(!total){
-    tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="eicon">📋</div><p>No quiz attempts yet.<br>Results will appear here once trainees complete the quiz.</p></div></td></tr>`;
+    tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="eicon">📋</div><p>No quiz attempts yet.<br>Results will appear here once trainees complete the quiz.</p></div></td></tr>';
     return;
   }
   tbody.innerHTML=[...results].reverse().map((r,i)=>{
     const bc=r.pct>=75?'pass':r.pct>=60?'mid':'fail';
-    const bl=r.pct>=75?'PASS':'FAIL';
     const d=new Date(r.ts);
     const ds=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     const ts=d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-    let weak='—';
-    if(r.catScores){
-      let minP=Infinity,minC=null;
-      Object.entries(r.catScores).forEach(([c,data])=>{if(data.total>0){const p=data.correct/data.total;if(p<minP){minP=p;minC=c;}}});
-      if(minC)weak=`${minC} (${Math.round(minP*100)}%)`;
-    }
-    return `<tr>
-      <td style="color:var(--muted);font-family:var(--font-mono);font-size:11px">${total-i}</td>
-      <td style="font-weight:500">${esc(r.name)}</td>
-      <td style="font-family:var(--font-mono)">${r.score}/${r.total} <span style="color:var(--muted)">(${r.pct}%)</span></td>
-      <td><span class="score-badge ${bc}">${bl}</span></td>
-      <td style="color:var(--muted);font-size:12px">${ds} ${ts}</td>
-      <td style="color:var(--accent3);font-size:12px">${weak}</td>
-    </tr>`;
+    let weak='&mdash;';
+    if(r.catScores){let mp=Infinity,mc=null;Object.entries(r.catScores).forEach(([c,data])=>{if(data.total>0){const p=data.correct/data.total;if(p<mp){mp=p;mc=c;}}});if(mc)weak=mc+' ('+Math.round(mp*100)+'%)';}
+    return '<tr><td style="color:var(--muted);font-family:var(--font-mono);font-size:11px">'+(total-i)+'</td>'
+      +'<td style="font-weight:500">'+esc(r.name)+'</td>'
+      +'<td style="font-family:var(--font-mono)">'+r.score+'/'+r.total+' <span style="color:var(--muted)">('+r.pct+'%)</span></td>'
+      +'<td><span class="score-badge '+bc+'">'+(r.pct>=75?'PASS':'FAIL')+'</span></td>'
+      +'<td style="color:var(--muted);font-size:12px">'+ds+' '+ts+'</td>'
+      +'<td style="color:var(--accent3);font-size:12px">'+weak+'</td></tr>';
   }).join('');
 }
-
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-function clearResults(){
-  if(confirm('Clear ALL quiz results? This cannot be undone.')){
-    localStorage.removeItem(STORE_KEY);
-    renderDashboard();
-  }
-}
-
+function clearResults(){if(confirm('Clear ALL quiz results? This cannot be undone.')){localStorage.removeItem(STORE_KEY);renderDashboard();}}
 function exportCSV(){
-  const results=getResults();
-  if(!results.length){alert('No results to export.');return;}
+  const results=getResults();if(!results.length){alert('No results to export.');return;}
   const headers=['#','Name','Score','Percentage','Passed','Timestamp',...CATS];
   const rows=results.map((r,i)=>{
-    const cats=CATS.map(c=>{const d=r.catScores&&r.catScores[c];return d?`${d.correct}/${d.total}`:'—';});
-    return [i+1,`"${r.name}"`,`${r.score}/${r.total}`,`${r.pct}%`,r.passed?'Yes':'No',r.ts,...cats];
+    const cats=CATS.map(c=>{const d=r.catScores&&r.catScores[c];return d?d.correct+'/'+d.total:'N/A';});
+    return [i+1,'"'+r.name+'"',r.score+'/'+r.total,r.pct+'%',r.passed?'Yes':'No',r.ts,...cats];
   });
   const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download=`katalon-quiz-results-${Date.now()}.csv`;
-  a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='katalon-quiz-results-'+Date.now()+'.csv';a.click();
 }
 </script>
 </body>
