@@ -21,8 +21,8 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 /* ── SCREENS ── */
 .screen{display:none}
 .screen.active{display:block}
-#screen-name,#screen-admin-login{min-height:100vh;display:flex;align-items:center;justify-content:center}
-#screen-name.active,#screen-admin-login.active{display:flex}
+#screen-name,#screen-admin-login{min-height:100vh;align-items:center;justify-content:center}
+#screen-name.active,#screen-admin-login.active{display:flex !important}
 
 /* ── NAME ENTRY ── */
 .name-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 40px;max-width:480px;width:100%;text-align:center;position:relative;z-index:1;animation:slideUp .5s ease both}
