@@ -315,7 +315,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <table class="results-table">
         <thead>
           <tr>
-            <th>#</th><th>Name</th><th>Organisation</th><th>Score</th><th>Result</th><th>Date &amp; Time</th><th>Weakest Area</th>
+            <th>#</th><th>Quiz</th><th>Name</th><th>Organisation</th><th>Score</th><th>Result</th><th>Date &amp; Time</th><th>Weakest Area</th>
           </tr>
         </thead>
         <tbody id="results-tbody"></tbody>
@@ -416,6 +416,7 @@ const ALL_QUESTIONS=[
 ];
 
 const PASS_MARK=0.75;
+const QUIZ_NAME="Katalon Studio Web & API Testing";
 const ADMIN_PW="KatalonTrue";
 const CATS=["Configuration","Locators","Test Creation","Debugging","Test Data","Test Execution"];
 
@@ -730,7 +731,7 @@ function showScore(){
              :'<div class="breakdown-a c">'+a.correct+'</div>')
       +'</div></div>';
   }).join('');
-  saveResult({name:traineeName,org:traineeOrg,score,total:questions.length,pct:Math.round(pct*100),passed:pct>=PASS_MARK,catScores:JSON.parse(JSON.stringify(catScores)),ts:new Date().toISOString()});
+  saveResult({quiz:QUIZ_NAME,name:traineeName,org:traineeOrg,score,total:questions.length,pct:Math.round(pct*100),passed:pct>=PASS_MARK,catScores:JSON.parse(JSON.stringify(catScores)),ts:new Date().toISOString()});
 }
 
 function restartQuiz(){
@@ -812,6 +813,7 @@ async function renderDashboard(){
     let weak='&mdash;';
     if(r.catScores){let mp=Infinity,mc=null;Object.entries(r.catScores).forEach(([c,data])=>{if(data.total>0){const p=data.correct/data.total;if(p<mp){mp=p;mc=c;}}});if(mc)weak=mc+' ('+Math.round(mp*100)+'%)';}
     return '<tr><td style="color:var(--muted);font-family:var(--font-mono);font-size:11px">'+(total-i)+'</td>'
+      +'<td style="color:var(--accent2);font-size:12px">'+esc(r.quiz||'&mdash;')+'</td>'
       +'<td style="font-weight:500">'+esc(r.name)+'</td>'
       +'<td style="color:var(--muted);font-size:12px">'+esc(r.org||'&mdash;')+'</td>'
       +'<td style="font-family:var(--font-mono)">'+r.score+'/'+r.total+' <span style="color:var(--muted)">('+r.pct+'%)</span></td>'
@@ -829,10 +831,10 @@ async function clearResults(){
 }
 async function exportCSV(){
   const results=await getResults();if(!results.length){alert('No results to export.');return;}
-  const headers=['#','Name','Organisation','Score','Percentage','Passed','Timestamp',...CATS];
+  const headers=['#','Quiz','Name','Organisation','Score','Percentage','Passed','Timestamp',...CATS];
   const rows=results.map((r,i)=>{
     const cats=CATS.map(c=>{const d=r.catScores&&r.catScores[c];return d?d.correct+'/'+d.total:'N/A';});
-    return [i+1,'"'+r.name+'"','"'+(r.org||'')+'"',r.score+'/'+r.total,r.pct+'%',r.passed?'Yes':'No',r.ts,...cats];
+    return [i+1,'"'+(r.quiz||'')+'"','"'+r.name+'"','"'+(r.org||'')+'"',r.score+'/'+r.total,r.pct+'%',r.passed?'Yes':'No',r.ts,...cats];
   });
   const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
