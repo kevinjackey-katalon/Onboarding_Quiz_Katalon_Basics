@@ -219,7 +219,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
     <div class="name-error" id="name-error">Please enter your name to continue.</div>
     <button class="start-btn" onclick="startQuiz()">Begin Quiz →</button>
     <div class="meta-info">
-      <div class="meta-item"><div class="val">31</div><div class="lbl">Questions</div></div>
+      <div class="meta-item"><div class="val">27</div><div class="lbl">Questions</div></div>
       <div class="meta-item"><div class="val">6</div><div class="lbl">Topics</div></div>
       <div class="meta-item"><div class="val">75%</div><div class="lbl">Pass Mark</div></div>
     </div>
@@ -344,13 +344,9 @@ const ALL_QUESTIONS=[
   {category:"Test Data",q:"Which data binding strategy executes every data row exactly once?",options:["One-to-One","Range","All Combinations","All"],answer:3,explanation:"The All strategy executes each row once. All Combinations creates a full cross-product matrix, One-to-One maps Row N to Row N, and Range runs specific rows."},
   {category:"Test Data",q:"What is the main purpose of Execution Profiles in Katalon Studio?",options:["Recording browser interactions automatically","Storing Global Variables for different environments (Dev, QA, UAT, Prod)","Packaging test cases for deployment","Configuring locator strategies per environment"],answer:1,explanation:"Profiles store reusable Global Variables for different environments, decoupling test logic from environment-specific data and enabling scalable cross-environment execution."},
   {category:"Test Data",q:"What syntax is used to reference a Global Variable inside a test case?",options:["GlobalVariable.VARIABLE_NAME","${GlobalVariable.VARIABLE_NAME}","@GlobalVariable.VARIABLE_NAME","Profiles.get('VARIABLE_NAME')"],answer:1,explanation:"Global Variables are referenced using the dollar-brace syntax GlobalVariable.VARIABLE_NAME within Katalon test cases."},
-  {category:"Test Execution",q:"What key capability do Test Suite Collections add over a single Test Suite?",options:["Support for data binding","Parallel execution and cross-browser/multi-profile testing","CLI execution support","API test support"],answer:1,explanation:"Test Suite Collections group multiple Test Suites and enable parallel execution, cross-browser testing, and multi-profile execution - not available in a single Test Suite."},
-  {category:"Test Execution",q:"Where do you configure browser-specific capabilities such as args, prefs, and WebDriver settings?",options:["Test Suite > Execution Settings","Project > Settings > Desired Capabilities > Web UI > [Browser Type]","Tools > WebDriver > Browser Config","Run > Advanced Options > Capabilities"],answer:1,explanation:"Browser capabilities (args, prefs, top-level capabilities) are configured via Project > Settings > Desired Capabilities > Web UI > [Browser Type]."},
+{category:"Test Execution",q:"Where do you configure browser-specific capabilities such as args, prefs, and WebDriver settings?",options:["Test Suite > Execution Settings","Project > Settings > Desired Capabilities > Web UI > [Browser Type]","Tools > WebDriver > Browser Config","Run > Advanced Options > Capabilities"],answer:1,explanation:"Browser capabilities (args, prefs, top-level capabilities) are configured via Project > Settings > Desired Capabilities > Web UI > [Browser Type]."},
   {category:"Test Execution",q:"Which browser argument runs the browser in headless mode for faster execution?",options:["--no-gui","--disable-display","--headless","--silent"],answer:2,explanation:"The --headless argument runs the browser without a visible UI for faster execution. It is often combined with --disable-gpu for compatibility."},
-  {category:"Test Execution",q:"What is required to activate the Katalon Runtime Engine when generating a CLI command?",options:["A valid Katalon license file (.lic)","A Katalon API key","A Jenkins integration token","A TestOps project ID"],answer:1,explanation:"A Katalon API key must be entered in the Command Builder. It is required to activate the Runtime Engine for CLI/console execution."},
-  {category:"Test Execution",q:"In the Linux cron expression 0 2 * * *, when does the job run?",options:["Every 2 minutes","At 2:00 AM every day","At 2:00 PM on weekdays","Every hour at minute 2"],answer:1,explanation:"0 2 * * * means: minute 0, hour 2, any day, any month, any weekday - 2:00 AM every day."},
-
-  // ── CODING EXERCISES ────────────────────────────────────────────────
+// ── CODING EXERCISES ────────────────────────────────────────────────
   {type:"fill",category:"Test Creation",
    q:"Complete the Script Mode call to click the element stored at <code>Page_Login/btn_login</code>:",
    code:'WebUI.<span id="b1">______</span>(findTestObject(<span class="str">\'Page_Login/btn_login\'</span>))',
@@ -390,20 +386,7 @@ const ALL_QUESTIONS=[
     {id:"h4",line:"WebUI.setText(findTestObject(<span class=\"str\">'txt_password'</span>), password)",bug:false}
    ],
    explanation:"Line 2 uses 'Password' with a capital P, but if the CSV column header is 'password' (lowercase), getValue() returns null - causing the password field to be empty with no error thrown."},
-
-  {type:"bug",category:"Test Execution",
-   q:"This CLI command has one incorrect flag. Click the line containing the error:",
-   hint:"Hint: Check the flag used to specify the test suite path.",
-   code:[
-    {id:"k1",line:"katalon \\",bug:false},
-    {id:"k2",line:"  -noSplash -runMode=console \\",bug:false},
-    {id:"k3",line:"  -projectPath=<span class=\"str\">\"/projects/MyApp/MyApp.prj\"</span> \\",bug:false},
-    {id:"k4",line:"  -suitePath=<span class=\"str\">\"Test Suites/LoginTests\"</span> \\",bug:true},
-    {id:"k5",line:"  -executionProfile=<span class=\"str\">\"QA\"</span> -browserType=<span class=\"str\">\"Chrome\"</span>",bug:false}
-   ],
-   explanation:"Line 4 uses -suitePath which is not a valid Katalon CLI flag. The correct flag is -testSuitePath. Using an unrecognised flag causes the command to fail or run with no suite specified."},
-
-  {type:"order",category:"Test Creation",
+{type:"order",category:"Test Creation",
    q:"Drag to arrange these steps in the correct order for a Web Recorder session:",
    items:[
     {id:"r1",text:"Configure default locator strategy in Project Settings"},
