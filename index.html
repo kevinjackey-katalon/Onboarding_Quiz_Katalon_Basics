@@ -219,7 +219,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
     <div class="name-error" id="name-error">Please enter your name to continue.</div>
     <button class="start-btn" onclick="startQuiz()">Begin Quiz →</button>
     <div class="meta-info">
-      <div class="meta-item"><div class="val">25</div><div class="lbl">Questions</div></div>
+      <div class="meta-item"><div class="val">31</div><div class="lbl">Questions</div></div>
       <div class="meta-item"><div class="val">6</div><div class="lbl">Topics</div></div>
       <div class="meta-item"><div class="val">75%</div><div class="lbl">Pass Mark</div></div>
     </div>
@@ -336,9 +336,7 @@ const ALL_QUESTIONS=[
   {category:"Test Creation",q:"After using the Web Recorder, where should captured objects initially be reviewed?",options:["The Object Repository root folder","A temporary (Temp) folder","The Test Data folder","The Keywords folder"],answer:1,explanation:"After recording, objects land in a Temp folder. Best practice is to review, rename, and then move them to appropriate repository folders."},
   {category:"Test Creation",q:"What is the primary benefit of Katalon's Studio Assist?",options:["Automatically runs regression suites on a schedule","Generates test steps from natural language inputs or requirements","Connects directly to Jira to import test cases","Converts recorded tests to Groovy scripts"],answer:1,explanation:"Studio Assist is an AI-powered assistant that generates test cases from natural language inputs, requirements, or test ideas, accelerating test authoring."},
   {category:"Test Creation",q:"In Script Mode, how do you call a built-in keyword to click a web element?",options:["Keywords.click()","WebUI.click()","Katalon.clickElement()","Test.perform('click')"],answer:1,explanation:"Built-in web keywords use the WebUI prefix in Script Mode, e.g., WebUI.click(). Custom keywords use CustomKeywords.'path.to.method'()."},
-  {category:"Test Creation",q:"Which of the following is a valid source for importing API test objects into Katalon?",options:["A Postman collection","A JUnit XML file","A Maven POM file","A Selenium IDE export"],answer:0,explanation:"Katalon supports importing from Postman collections, as well as Swagger/OpenAPI (YAML/JSON), WADL, WSDL, and SoapUI."},
-  {category:"Test Creation",q:"Which API test creation mode lets you type intent in plain English to auto-generate code?",options:["Keyword Mode","Import Mode with AI","Script Mode with StudioAssist","Object Spy Mode"],answer:2,explanation:"Script Mode with StudioAssist lets you describe intent in plain English and auto-generates the corresponding test code."},
-  {category:"Debugging",q:"In which view is breakpoint-based debugging available in Katalon Studio?",options:["Manual Mode","Script Mode","Both Manual and Script Mode","Debug Panel only"],answer:1,explanation:"Breakpoints are only available in Script Mode. Click in the gutter next to a code line to set one, then launch debug mode using the debug icon."},
+{category:"Debugging",q:"In which view is breakpoint-based debugging available in Katalon Studio?",options:["Manual Mode","Script Mode","Both Manual and Script Mode","Debug Panel only"],answer:1,explanation:"Breakpoints are only available in Script Mode. Click in the gutter next to a code line to set one, then launch debug mode using the debug icon."},
   {category:"Debugging",q:"Which debug control lets you step into the logic of a called keyword?",options:["Step Over","Step Out","Step Into","Resume"],answer:2,explanation:"Step Into dives into called keywords. Step Over moves to the next line, Step Out exits the current keyword, and Resume continues execution."},
   {category:"Debugging",q:"How does Object Spy differ from Self-Healing for fixing broken locators?",options:["Object Spy is automated; Self-Healing is manual","Object Spy is manual locate-and-fix; Self-Healing is smart auto-correction","Object Spy only works for API; Self-Healing is web-only","They are identical features with different names"],answer:1,explanation:"Object Spy is a manual tool for highlighting and capturing locators, while Self-Healing automatically detects broken locators at runtime and suggests corrections."},
   {category:"Test Data",q:"What is the recommended maximum dataset size for Internal Data files?",options:["100-200 rows","50-100 rows","5-20 rows","No limit recommended"],answer:2,explanation:"Internal Data should be kept to 5-20 rows for maintainability. Larger regression datasets should use Excel or CSV files instead."},
@@ -364,20 +362,7 @@ const ALL_QUESTIONS=[
    code:'WebUI.navigateToUrl(<span id="b2">__________________</span>)',
    blanks:[{id:"b2",answer:"GlobalVariable.APP_URL",alt:[],placeholder:"GlobalVariable.???"}],
    explanation:"In Groovy Script Mode, Global Variables are accessed directly as GlobalVariable.VARIABLE_NAME - no quotes or braces needed."},
-
-  {type:"fill",category:"Test Creation",
-   q:"Complete the keyword that sends an API request and captures the response:",
-   code:'<span class="kw">def</span> response = WS.<span id="b3">____________</span>(findTestObject(<span class="str">\'API/POST_Login\'</span>))',
-   blanks:[{id:"b3",answer:"sendRequest",alt:[],placeholder:"keyword"}],
-   explanation:"WS.sendRequest() sends an HTTP request using a RequestObject from the Object Repository and returns a ResponseObject for verification."},
-
-  {type:"fill",category:"Debugging",
-   q:"Complete the assertion that verifies the API response has HTTP status code 200:",
-   code:'WS.<span id="b4">_______________________</span>(response, <span class="num">200</span>)',
-   blanks:[{id:"b4",answer:"verifyResponseStatusCode",alt:[],placeholder:"keyword"}],
-   explanation:"WS.verifyResponseStatusCode() checks that the HTTP status code matches the expected value and fails the test step if they differ."},
-
-  {type:"fill",category:"Test Creation",
+{type:"fill",category:"Test Creation",
    q:"Complete the custom keyword call using the full path <code>common.utils.LoginHelper.loginAs</code>:",
    code:"CustomKeywords.<span id=\"b5\">_______________________________</span>(<span class=\"str\">'admin'</span>, <span class=\"str\">'pass123'</span>)",
    blanks:[{id:"b5",answer:"'common.utils.LoginHelper.loginAs'",alt:[],placeholder:"'package.Class.method'"}],
